@@ -7,11 +7,9 @@
 
     <title>Daftar</title>
 
-    <!-- Memuat Tailwind CSS dan Font Inter (Penting untuk tampilan modern) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Mengatur font Inter */
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -20,10 +18,8 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         
-        <!-- Card Register Utama -->
         <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg border border-gray-100">
             <div>
-                <!-- Header Card -->
                 <p class="text-sm font-medium text-gray-500">
                     Silakan isi detail Anda untuk mendaftar
                 </p>

@@ -1,16 +1,16 @@
-# Sistem Manajemen Perpustakaan - Light Novel & Manga
+# 📚 Sistem Perpustakaan Digital
 
-Sistem manajemen perpustakaan yang berfokus pada koleksi Light Novel dan Manga Jepang dengan fitur peminjaman, manajemen pengguna, dan sistem denda otomatis.
+Sistem perpustakaan digital untuk mengelola koleksi buku, peminjaman, dan pengembalian dengan fokus pada Light Novel dan Manga.
 
 ## 📋 Daftar Isi
 
 - [Deskripsi Proyek](#deskripsi-proyek)
+- [Software Development Life Cycle (SDLC)](#software-development-life-cycle-sdlc)
 - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
 - [Flowchart Sistem](#flowchart-sistem)
-- [Software Development Life Cycle (SDLC)](#software-development-life-cycle-sdlc)
 - [Fitur Utama](#fitur-utama)
 - [Teknologi yang Digunakan](#teknologi-yang-digunakan)
-- [Panduan Instalasi Windows (XAMPP)](#panduan-instalasi-windows-xampp)
+- [Panduan Instalasi](#panduan-instalasi)
 - [Penggunaan](#penggunaan)
 - [Struktur Database](#struktur-database)
 - [Kontribusi](#kontribusi)
@@ -26,154 +26,439 @@ Sistem Manajemen Perpustakaan ini dikembangkan khusus untuk mengelola koleksi Li
 - Interface yang mudah digunakan dalam Bahasa Indonesia
 - Fokus khusus pada literatur Jepang (Light Novel & Manga)
 
-## 📊 Entity Relationship Diagram (ERD)
+## 🔄 Software Development Life Cycle (SDLC)
 
+Proyek ini dikembangkan menggunakan metodologi **Agile** dengan pendekatan iteratif untuk memastikan kualitas dan fleksibilitas dalam pengembangan.
+
+### 1. **Planning & Analysis** 📋
+**Durasi**: 1-2 Minggu
+
+**Aktivitas**:
+- **Requirement Gathering**: Identifikasi kebutuhan sistem perpustakaan digital
+- **Stakeholder Analysis**: Analisis pengguna (Admin & Member)
+- **Feasibility Study**: Evaluasi teknologi Laravel, MySQL, dan infrastruktur
+- **Project Scope**: Penentuan batasan dan target sistem
+- **Risk Assessment**: Identifikasi risiko teknis dan non-teknis
+
+**Deliverables**:
+- Dokumen System Requirement Specification (SRS)
+- Project charter dan timeline
+- Risk mitigation plan
+- Resource allocation plan
+
+### 2. **System Design** 🎨
+**Durasi**: 1-2 Minggu
+
+**Aktivitas**:
+- **Architecture Design**: Desain arsitektur MVC dengan Laravel
+- **Database Design**: Pembuatan ERD dan normalisasi database
+- **UI/UX Design**: Wireframe dan prototype interface
+- **API Design**: Perencanaan endpoint dan routing
+- **Security Design**: Implementasi authentication dan authorization
+
+**Deliverables**:
+- System Architecture Diagram
+- Entity Relationship Diagram (ERD)
+- Database schema dan migration files
+- UI/UX mockups dan prototypes
+- API documentation
+
+### 3. **Implementation** 💻
+**Durasi**: 4-6 Minggu
+
+#### **Sprint 1: Foundation** (Week 1-2)
+- Setup Laravel project structure
+- Database migration dan seeding
+- Authentication system (Login/Register)
+- Role-based access control
+- Basic routing dan middleware
+
+#### **Sprint 2: Core Features** (Week 3-4)
+- CRUD operations untuk Books
+- User management system
+- Dashboard admin dan user
+- Search dan filter functionality
+
+#### **Sprint 3: Business Logic** (Week 5-6)
+- Borrowing system implementation
+- Return book functionality
+- Fine calculation system
+- Notification system
+
+#### **Sprint 4: Polish & Enhancement** (Week 7)
+- UI/UX improvements
+- File upload untuk cover buku
+- Responsive design optimization
+- Performance optimization
+
+**Deliverables**:
+- Working application dengan semua fitur core
+- Clean dan documented source code
+- Database dengan sample data
+- Unit tests untuk critical functions
+
+### 4. **Testing** 🧪
+**Durasi**: 1-2 Minggu
+
+**Test Strategy**:
+- **Unit Testing**: Testing individual components (Models, Controllers)
+- **Integration Testing**: Testing antar module dan database interaction
+- **System Testing**: End-to-end testing semua workflow
+- **User Acceptance Testing**: Testing dengan actual users
+- **Performance Testing**: Load testing dan response time optimization
+- **Security Testing**: Authentication, authorization, dan input validation
+
+**Test Cases**:
+- Authentication flow (Login/Register/Logout)
+- CRUD operations untuk semua entities
+- Borrowing workflow (Borrow → Return → Fine calculation)
+- Role-based access control
+- File upload functionality
+- Search dan filter operations
+
+**Deliverables**:
+- Test cases documentation
+- Test execution reports
+- Bug tracking dan resolution logs
+- Performance benchmarks
+
+### 5. **Deployment** 🚀
+**Durasi**: 3-5 Hari
+
+**Deployment Strategy**:
+- **Environment Setup**: Production server configuration
+- **Database Migration**: Production database setup
+- **Application Deployment**: Source code deployment dengan CI/CD
+- **SSL Configuration**: Security certificate setup
+- **Monitoring Setup**: Application monitoring dan logging
+- **Backup Strategy**: Automated backup implementation
+
+**Deliverables**:
+- Live application di production environment
+- Deployment documentation
+- User manual dan admin guide
+- Monitoring dashboard
+- Backup dan recovery procedures
+
+### 6. **Maintenance & Support** 🔧
+**Ongoing Process**
+
+**Maintenance Activities**:
+- **Bug Fixes**: Response terhadap issues yang dilaporkan
+- **Feature Updates**: Penambahan fitur berdasarkan user feedback
+- **Security Updates**: Regular security patches
+- **Performance Optimization**: Database dan application tuning
+- **Backup Management**: Regular data backup dan recovery testing
+
+**Support Strategy**:
+- **Level 1 Support**: Basic user support dan troubleshooting
+- **Level 2 Support**: Technical issues dan configuration
+- **Level 3 Support**: Advanced technical problems dan development
+
+**Maintenance Schedule**:
+- **Daily**: System monitoring dan health checks
+- **Weekly**: Performance review dan optimization
+- **Monthly**: Security updates dan patches
+- **Quarterly**: Feature review dan enhancement planning
+- **Yearly**: Major version updates dan technology refresh
+
+## 🗄️ Entity Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK
+        string name "NOT NULL"
+        string username "UNIQUE, NOT NULL"
+        string email "UNIQUE, NULLABLE"
+        string password "NOT NULL"
+        enum role "user, admin - DEFAULT user"
+        string phone "NULLABLE"
+        text address "NULLABLE"
+        timestamp email_verified_at "NULLABLE"
+        string remember_token "NULLABLE"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    BUKU {
+        bigint id PK
+        string title "NOT NULL"
+        string author "NOT NULL"
+        string isbn "UNIQUE, NULLABLE"
+        enum type "light_novel, manga - NOT NULL"
+        text description "NULLABLE"
+        string publisher "NULLABLE"
+        date publication_date "NULLABLE"
+        integer total_copies "DEFAULT 1"
+        integer available_copies "DEFAULT 1"
+        string cover_image "NULLABLE"
+        decimal price "NULLABLE, 10,2"
+        boolean is_active "DEFAULT true"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PEMINJAMAN {
+        bigint id PK
+        bigint user_id FK "NOT NULL"
+        bigint buku_id FK "NOT NULL"
+        date tanggal_pinjam "NOT NULL"
+        date tanggal_kembali_rencana "NOT NULL"
+        date tanggal_kembali_aktual "NULLABLE"
+        enum status "dipinjam, dikembalikan, terlambat - DEFAULT dipinjam"
+        decimal denda "DEFAULT 0, 10,2"
+        text catatan "NULLABLE"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    USERS ||--o{ PEMINJAMAN : "has many borrowings"
+    BUKU ||--o{ PEMINJAMAN : "can be borrowed multiple times"
 ```
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│      USERS      │       │   PEMINJAMAN    │       │      BUKU       │
-├─────────────────┤       ├─────────────────┤       ├─────────────────┤
-│ id (PK)         │◄──────┤ user_id (FK)    │──────►│ id (PK)         │
-│ name            │       │ buku_id (FK)    │       │ title           │
-│ username        │       │ tanggal_pinjam  │       │ author          │
-│ email           │       │ tanggal_kembali │       │ isbn            │
-│ password        │       │ tanggal_aktual  │       │ type            │
-│ role            │       │ status          │       │ description     │
-│ phone           │       │ denda           │       │ publisher       │
-│ address         │       │ created_at      │       │ publication_date│
-│ created_at      │       │ updated_at      │       │ total_copies    │
-│ updated_at      │       └─────────────────┘       │ available_copies│
-└─────────────────┘                                 │ price           │
-                                                    │ cover_image     │
-                                                    │ is_active       │
-                                                    │ created_at      │
-                                                    │ updated_at      │
-                                                    └─────────────────┘
+
+### **Relationship Details:**
+
+1. **USERS ↔ PEMINJAMAN** (One-to-Many)
+   - Satu user dapat memiliki banyak peminjaman
+   - Setiap peminjaman hanya milik satu user
+   - Foreign Key: `peminjaman.user_id` → `users.id`
+   - Constraint: CASCADE on delete
+
+2. **BUKU ↔ PEMINJAMAN** (One-to-Many)
+   - Satu buku dapat dipinjam berkali-kali (dalam waktu berbeda)
+   - Setiap record peminjaman hanya untuk satu buku
+   - Foreign Key: `peminjaman.buku_id` → `buku.id`
+   - Constraint: CASCADE on delete
+
+### **Business Rules:**
+- User dengan role 'admin' memiliki akses penuh ke sistem
+- User dengan role 'user' hanya dapat mengelola peminjaman mereka sendiri
+- Buku dengan `is_active = false` tidak dapat dipinjam
+- `available_copies` tidak boleh negatif dan tidak boleh melebihi `total_copies`
+- Denda dihitung otomatis: Rp 7.000 per hari keterlambatan
+- Status peminjaman berubah otomatis menjadi 'terlambat' jika `tanggal_kembali_aktual > tanggal_kembali_rencana`
+
+## 📊 Flowchart Sistem
+
+### **Main System Flow**
+
+```mermaid
+flowchart TD
+    A[Start Application] --> B{User Authenticated?}
+    B -->|No| C[Redirect to Login Page]
+    B -->|Yes| D{Check User Role}
+    
+    C --> E[Login/Register Form]
+    E --> F{Login or Register?}
+    F -->|Login| G[Validate Credentials]
+    F -->|Register| H[Registration Form]
+    
+    G --> I{Credentials Valid?}
+    I -->|No| J[Show Error Message]
+    I -->|Yes| K[Create Session]
+    
+    H --> L[Validate Registration Data]
+    L --> M{Data Valid?}
+    M -->|No| N[Show Validation Errors]
+    M -->|Yes| O[Create User Account]
+    
+    J --> E
+    N --> H
+    K --> D
+    O --> D
+    
+    D -->|Admin| P[Admin Dashboard]
+    D -->|User| Q[User Dashboard]
+    
+    P --> R[Admin Functions]
+    Q --> S[User Functions]
+    
+    R --> T[Manage Books]
+    R --> U[Manage Users]
+    R --> V[Manage Borrowings]
+    R --> W[View Reports]
+    R --> X[System Settings]
+    
+    S --> Y[Browse Books]
+    S --> Z[My Borrowings]
+    S --> AA[Borrowing History]
+    S --> BB[Profile Settings]
+    
+    T --> CC[CRUD Operations]
+    U --> DD[View User List]
+    V --> EE[Borrowing Management]
+    W --> FF[Generate Reports]
+    
+    Y --> GG[Search & Filter]
+    Z --> HH[Active Borrowings]
+    AA --> II[View History]
+    
+    CC --> JJ[Update Book Database]
+    EE --> KK[Process Borrowing]
+    GG --> LL{Book Available?}
+    HH --> MM[Return Book Option]
+    
+    LL -->|Yes| NN[Initiate Borrowing]
+    LL -->|No| OO[Show Unavailable Message]
+    
+    NN --> PP[Create Borrowing Record]
+    MM --> QQ[Process Return]
+    
+    PP --> RR[Update Book Availability]
+    QQ --> SS{Calculate Fine?}
+    
+    SS -->|Yes| TT[Calculate Late Fee]
+    SS -->|No| UU[Update Status Only]
+    
+    TT --> VV[Update Borrowing Record]
+    UU --> VV
+    
+    VV --> WW[Restore Book Availability]
+    
+    JJ --> XX[Return to Dashboard]
+    KK --> XX
+    FF --> XX
+    RR --> XX
+    WW --> XX
+    OO --> XX
+    II --> XX
+    
+    XX --> YY{User Action?}
+    YY -->|Continue| D
+    YY -->|Logout| ZZ[Destroy Session]
+    
+    ZZ --> AAA[Redirect to Login]
+    AAA --> BBB[End]
 ```
 
-### Relasi Antar Tabel:
+### **Book Borrowing Flow**
 
-1. **Users - Peminjaman**: One-to-Many
-   - Satu pengguna dapat memiliki banyak peminjaman
-   - Setiap peminjaman hanya milik satu pengguna
-
-2. **Buku - Peminjaman**: One-to-Many
-   - Satu buku dapat dipinjam berkali-kali (berbeda waktu)
-   - Setiap peminjaman hanya untuk satu buku
-
-## 🔄 Flowchart Sistem
-
-### Alur Autentikasi
-```
-┌─────────────┐
-│    Start    │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐    Tidak   ┌─────────────┐
-│  Akses URL  ├───────────►│   Login     │
-└─────┬───────┘            └─────┬───────┘
-      │                          │
-      │ Sudah Login              │
-      v                          v
-┌─────────────┐                ┌─────────────┐
-│  Dashboard  │                │  Validasi   │
-└─────┬───────┘                └─────┬───────┘
-      │                              │
-      │                              │ Valid
-      v                              v
-┌─────────────┐                ┌─────────────┐
-│ Cek Role    │                │  Dashboard  │
-└─────┬───────┘                └─────────────┘
-      │
-      ├─ Admin ──► Admin Dashboard
-      │
-      └─ User ───► User Dashboard
+```mermaid
+flowchart TD
+    A[User Wants to Borrow Book] --> B[Browse Book Catalog]
+    B --> C[Select Desired Book]
+    C --> D{Book Available?}
+    
+    D -->|No| E[Show "Book Not Available"]
+    D -->|Yes| F{User Has Active Borrowing of Same Book?}
+    
+    F -->|Yes| G[Show "Already Borrowed" Message]
+    F -->|No| H{User Below Borrowing Limit?}
+    
+    H -->|No| I[Show "Borrowing Limit Reached"]
+    H -->|Yes| J[Show Borrowing Confirmation]
+    
+    J --> K{User Confirms?}
+    K -->|No| L[Cancel Borrowing]
+    K -->|Yes| M[Process Borrowing Request]
+    
+    M --> N[Create Borrowing Record]
+    N --> O[Set Borrowing Date to Today]
+    O --> P[Set Return Date +7 Days]
+    P --> Q[Decrease Available Copies]
+    Q --> R[Update Book Status]
+    R --> S[Send Confirmation to User]
+    S --> T[Show Success Message]
+    
+    E --> U[Return to Book List]
+    G --> U
+    I --> U
+    L --> U
+    T --> U
+    
+    U --> V[End Borrowing Process]
 ```
 
-### Alur Peminjaman Buku
-```
-┌─────────────┐
-│  User Login │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Browse Buku │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐    Tidak   ┌─────────────┐
-│ Pilih Buku  ├───────────►│ Buku Tidak  │
-└─────┬───────┘ Tersedia   │ Tersedia    │
-      │                    └─────────────┘
-      │ Tersedia
-      v
-┌─────────────┐
-│ Cek Status  │
-│ Pengguna    │
-└─────┬───────┘
-      │
-      │ Belum Pinjam Buku Ini
-      v
-┌─────────────┐
-│ Proses      │
-│ Peminjaman  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Update      │
-│ Database    │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Konfirmasi  │
-│ Berhasil    │
-└─────────────┘
+### **Book Return Flow**
+
+```mermaid
+flowchart TD
+    A[User Initiates Return] --> B[Select Book to Return]
+    B --> C{Book Currently Borrowed by User?}
+    
+    C -->|No| D[Show "Invalid Return" Error]
+    C -->|Yes| E[Check Return Date]
+    
+    E --> F{Return Date Passed?}
+    F -->|No| G[Process Normal Return]
+    F -->|Yes| H[Calculate Late Fee]
+    
+    G --> I[Set Return Date to Today]
+    H --> J[Calculate Days Late]
+    J --> K[Calculate Fine: Days × Rp 7,000]
+    K --> L[Set Return Date to Today]
+    L --> M[Update Fine Amount]
+    
+    I --> N[Update Borrowing Status to 'returned']
+    M --> O[Update Borrowing Status to 'late']
+    
+    N --> P[Increase Available Copies]
+    O --> P
+    
+    P --> Q[Update Book Availability]
+    Q --> R[Send Return Confirmation]
+    R --> S{Fine Amount > 0?}
+    
+    S -->|No| T[Show "Return Successful"]
+    S -->|Yes| U[Show "Return with Fine: Rp X"]
+    
+    D --> V[Return to Borrowing List]
+    T --> V
+    U --> V
+    
+    V --> W[End Return Process]
 ```
 
-### Alur Pengembalian Buku
-```
-┌─────────────┐
-│ User Login  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ My Borrowing│
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Pilih Buku  │
-│ Dikembalikan│
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Hitung Denda│
-│ (Jika Ada)  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Update      │
-│ Status      │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Tambah      │
-│ Available   │
-│ Copies      │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Konfirmasi  │
-│ Selesai     │
-└─────────────┘
+### **Admin Book Management Flow**
+
+```mermaid
+flowchart TD
+    A[Admin Accesses Book Management] --> B{Admin Action?}
+    
+    B -->|Add New Book| C[Show Add Book Form]
+    B -->|Edit Book| D[Select Book to Edit]
+    B -->|Delete Book| E[Select Book to Delete]
+    B -->|View Books| F[Display Book List]
+    
+    C --> G[Fill Book Information]
+    G --> H[Upload Cover Image (Optional)]
+    H --> I[Validate Form Data]
+    I --> J{Data Valid?}
+    J -->|No| K[Show Validation Errors]
+    J -->|Yes| L[Save Book to Database]
+    
+    D --> M[Load Book Data]
+    M --> N[Show Edit Form with Current Data]
+    N --> O[Modify Book Information]
+    O --> P[Validate Changes]
+    P --> Q{Changes Valid?}
+    Q -->|No| R[Show Validation Errors]
+    Q -->|Yes| S[Update Book in Database]
+    
+    E --> T{Book Has Active Borrowings?}
+    T -->|Yes| U[Show "Cannot Delete" Warning]
+    T -->|No| V[Show Delete Confirmation]
+    V --> W{Admin Confirms?}
+    W -->|No| X[Cancel Deletion]
+    W -->|Yes| Y[Delete Book from Database]
+    
+    F --> Z[Apply Filters (Optional)]
+    Z --> AA[Display Filtered Results]
+    AA --> BB[Pagination for Large Dataset]
+    
+    K --> C
+    L --> CC[Show Success Message]
+    R --> N
+    S --> CC
+    U --> DD[Return to Book List]
+    X --> DD
+    Y --> EE[Show "Book Deleted" Message]
+    BB --> DD
+    CC --> DD
+    EE --> DD
+    
+    DD --> FF[End Book Management]
 ```
 
 ## 🔄 Software Development Life Cycle (SDLC)
@@ -285,30 +570,362 @@ Proyek ini dikembangkan menggunakan metodologi **Waterfall** dengan tahapan seba
 - Quarterly feature reviews
 - Yearly major updates
 
-## ✨ Fitur Utama
+## ✨ Fitur Aplikasi
 
-### 👨‍💼 Admin Features:
-- **Dashboard Komprehensif**: Statistik lengkap sistem
-- **Manajemen Buku**: CRUD lengkap untuk koleksi buku
-- **Manajemen Peminjaman**: Monitoring semua aktivitas peminjaman
-- **Manajemen Pengguna**: Lihat semua pengguna terdaftar
-- **Laporan Keterlambatan**: Tracking buku yang terlambat dikembalikan
-- **Sistem Denda**: Kalkulasi otomatis denda keterlambatan
+### 🔐 **Authentication & Authorization System**
 
-### 👤 User Features:
-- **Browse Koleksi**: Pencarian dan filter buku berdasarkan jenis
-- **Peminjaman Mandiri**: Pinjam buku secara langsung
-- **Riwayat Peminjaman**: Lihat history peminjaman pribadi
-- **Status Real-time**: Cek status peminjaman dan denda
-- **Notifikasi Denda**: Informasi denda jika terlambat mengembalikan
+#### **User Registration & Login**
+- **Multi-field Registration**: Nama lengkap, username, email, phone, address
+- **Secure Login**: Email/username based authentication dengan password hashing
+- **Role-based Access Control**: Automatic role assignment (user/admin)
+- **Session Management**: Secure session handling dengan remember token
+- **Form Validation**: Comprehensive client & server-side validation
+- **Error Handling**: User-friendly error messages dalam Bahasa Indonesia
 
-### 🔧 System Features:
-- **Autentikasi Ganda**: Login dengan username atau email
-- **Role-Based Access**: Pembedaan akses admin dan user
-- **Responsive Design**: Compatible untuk desktop dan mobile
-- **File Upload**: Upload cover buku dengan validasi
-- **Search & Filter**: Pencarian advanced dengan multiple criteria
-- **Pagination**: Navigasi data yang optimal
+#### **Security Features**
+- **Password Security**: Bcrypt hashing untuk password
+- **CSRF Protection**: Token-based CSRF protection pada semua forms
+- **SQL Injection Prevention**: Eloquent ORM protection
+- **XSS Protection**: Automatic output escaping
+- **Rate Limiting**: Login attempt rate limiting untuk mencegah brute force
+
+### 👨‍💼 **Admin Dashboard & Management**
+
+#### **Comprehensive Admin Dashboard**
+- **System Statistics**: 
+  - Total books in library
+  - Total registered users
+  - Active borrowings count
+  - Overdue books tracking
+  - Revenue from fines
+- **Real-time Monitoring**: Live updates pada borrowing activities
+- **Quick Actions**: Direct access ke critical functions
+- **Data Visualization**: Charts dan graphs untuk library metrics
+
+#### **Advanced Book Management**
+- **Complete CRUD Operations**:
+  - **Create**: Add new books dengan rich information
+  - **Read**: Detailed book viewing dengan borrowing history
+  - **Update**: Edit book information dan manage availability
+  - **Delete**: Safe deletion dengan borrowing constraint checks
+
+- **Book Information Management**:
+  - Basic info (title, author, ISBN)
+  - Classification (Light Novel/Manga)
+  - Publication details (publisher, publication date)
+  - Inventory management (total copies, available copies)
+  - Pricing information
+  - Cover image upload dengan validation
+  - Active/inactive status toggle
+
+- **Advanced Features**:
+  - **Bulk Operations**: Mass update multiple books
+  - **Import/Export**: CSV import untuk bulk book addition
+  - **Search & Filter**: Multi-criteria search functionality
+  - **Pagination**: Efficient handling of large book catalogs
+  - **Sorting**: Multiple sorting options (title, author, date, popularity)
+
+#### **Comprehensive Borrowing Management**
+- **Borrowing Oversight**:
+  - View all borrowings dalam sistem
+  - Filter by status (active, returned, overdue)
+  - Search by user atau book title
+  - Date range filtering
+  - Export borrowing reports
+
+- **Manual Borrowing Creation**:
+  - Create borrowings untuk users secara manual
+  - Flexible borrowing duration (1-30 days)
+  - Override availability checks jika diperlukan
+  - Bulk borrowing creation
+
+- **Return Processing**:
+  - Process returns dengan automatic fine calculation
+  - Override fine amounts jika diperlukan
+  - Add notes untuk special circumstances
+  - Bulk return processing
+
+- **Overdue Management**:
+  - Dedicated overdue tracking page
+  - Automatic fine calculation (Rp 7,000/day)
+  - Send reminder notifications
+  - Generate overdue reports
+  - Collection management tools
+
+#### **User Management System**
+- **User Oversight**:
+  - View all registered users
+  - Monitor user borrowing patterns
+  - Track user fine history
+  - User activity logs
+
+- **User Actions**:
+  - Suspend/activate user accounts
+  - Reset user passwords
+  - Update user information
+  - View detailed user profiles
+
+#### **Reporting & Analytics**
+- **Borrowing Reports**:
+  - Daily/weekly/monthly borrowing statistics
+  - Most popular books analysis
+  - User borrowing patterns
+  - Revenue reports from fines
+
+- **System Reports**:
+  - Library utilization rates
+  - Book availability analysis
+  - Overdue trend analysis
+  - User engagement metrics
+
+### 👤 **User Dashboard & Features**
+
+#### **Personalized User Dashboard**
+- **Personal Statistics**:
+  - Books currently borrowed
+  - Total books borrowed (lifetime)
+  - Current fines owed
+  - Borrowing history summary
+  - Favorite genres analysis
+
+- **Quick Access Panel**:
+  - Recently borrowed books
+  - Books due soon
+  - Recommended books
+  - New arrivals in preferred categories
+
+#### **Book Discovery & Browsing**
+- **Advanced Catalog Browser**:
+  - Grid/list view options
+  - Cover image display
+  - Availability status indicators
+  - Quick action buttons (borrow/wishlist)
+
+- **Powerful Search System**:
+  - Full-text search across title, author, description
+  - Auto-complete suggestions
+  - Search history
+  - Saved search filters
+
+- **Smart Filtering**:
+  - Filter by type (Light Novel/Manga)
+  - Filter by availability
+  - Filter by publication year
+  - Filter by author atau publisher
+  - Combine multiple filters
+
+- **Book Details**:
+  - Comprehensive book information
+  - Cover image gallery
+  - Reader reviews dan ratings
+  - Similar book recommendations
+  - Borrowing availability calendar
+
+#### **Personal Borrowing Management**
+- **Active Borrowings**:
+  - Real-time view of currently borrowed books
+  - Days remaining until due date
+  - Countdown timers untuk due dates
+  - Quick return actions
+  - Renewal requests (jika available)
+
+- **Borrowing History**:
+  - Complete borrowing timeline
+  - Download borrowing certificates
+  - Rate dan review borrowed books
+  - Re-borrow functionality
+  - Export personal borrowing data
+
+- **Self-service Returns**:
+  - One-click book returns
+  - Automatic fine calculation display
+  - Return confirmation emails
+  - Return receipt generation
+
+#### **Notification & Alert System**
+- **Due Date Reminders**:
+  - Email notifications 3 days before due
+  - Daily reminders untuk overdue books
+  - SMS alerts (jika configured)
+  - In-app notification badges
+
+- **System Notifications**:
+  - New book arrival alerts
+  - System maintenance notifications
+  - Policy update announcements
+  - Special promotion alerts
+
+### 💰 **Sophisticated Fine Management System**
+
+#### **Automatic Fine Calculation**
+- **Fair Fine Structure**:
+  - Standard rate: Rp 7,000 per day
+  - Grace period: No fine untuk same-day returns
+  - Maximum fine cap untuk expensive books
+  - Weekend/holiday considerations
+
+- **Dynamic Fine Processing**:
+  - Real-time fine calculation
+  - Automatic status updates
+  - Fine history tracking
+  - Payment reminder system
+
+#### **Fine Administration**
+- **Admin Fine Management**:
+  - View all outstanding fines
+  - Manual fine adjustments
+  - Fine forgiveness options
+  - Bulk fine processing
+  - Payment tracking
+
+- **User Fine Interface**:
+  - Clear fine breakdown display
+  - Payment history
+  - Dispute submission system
+  - Payment plan options
+
+### 📱 **Modern User Interface & Experience**
+
+#### **Responsive Design Excellence**
+- **Multi-device Compatibility**:
+  - Desktop optimization (1920px+)
+  - Tablet responsive design (768px-1024px)
+  - Mobile-first design (320px+)
+  - Touch-friendly interface elements
+
+- **Modern UI Components**:
+  - Material Design principles
+  - Smooth animations dan transitions
+  - Loading indicators
+  - Progress bars
+  - Modal dialogs
+  - Toast notifications
+
+#### **Accessibility & Localization**
+- **Accessibility Features**:
+  - Keyboard navigation support
+  - Screen reader compatibility
+  - High contrast mode
+  - Font size adjustment
+  - Color blind friendly design
+
+- **Indonesian Localization**:
+  - Complete Indonesian language interface
+  - Indonesian date/time formatting
+  - Indonesian currency formatting (Rupiah)
+  - Cultural context appropriate messaging
+
+### 🛡️ **Security & Performance Features**
+
+#### **Enterprise-level Security**
+- **Data Protection**:
+  - Encrypted data storage
+  - Secure file upload handling
+  - Input sanitization
+  - Output encoding
+  - SQL injection prevention
+
+- **Access Control**:
+  - Role-based permissions
+  - Route protection middleware
+  - API endpoint security
+  - File access restrictions
+
+#### **Performance Optimization**
+- **Database Optimization**:
+  - Proper indexing strategy
+  - Query optimization
+  - Lazy loading relationships
+  - Database connection pooling
+
+- **Frontend Performance**:
+  - Asset minification
+  - Image optimization
+  - Caching strategies
+  - CDN integration ready
+
+- **Scalability Features**:
+  - Horizontal scaling support
+  - Load balancer compatibility
+  - Session clustering support
+  - Cache layer implementation
+
+### 🔧 **Advanced System Features**
+
+#### **File Management System**
+- **Secure File Upload**:
+  - Image validation (JPEG, PNG, WebP)
+  - File size restrictions
+  - Virus scanning integration ready
+  - Automatic thumbnail generation
+  - Cloud storage integration ready
+
+#### **Email System Integration**
+- **Automated Email Notifications**:
+  - Welcome emails untuk new users
+  - Borrowing confirmation emails
+  - Due date reminder emails
+  - Overdue notification emails
+  - Return confirmation emails
+
+#### **API-Ready Architecture**
+- **RESTful API Endpoints**:
+  - Complete CRUD operations
+  - Authentication endpoints
+  - Search dan filter APIs
+  - Reporting APIs
+  - Integration-ready design
+
+#### **Audit & Logging System**
+- **Comprehensive Logging**:
+  - User activity logs
+  - System error logs
+  - Security event logs
+  - Performance monitoring logs
+  - Business intelligence data collection
+
+### 📊 **Business Intelligence & Analytics**
+
+#### **Data Analytics**
+- **Usage Analytics**:
+  - Page view tracking
+  - User behavior analysis
+  - Feature usage statistics
+  - Performance metrics
+  - Error rate monitoring
+
+- **Business Metrics**:
+  - Library ROI calculation
+  - User satisfaction metrics
+  - Book popularity trends
+  - Revenue analytics
+  - Operational efficiency metrics
+
+#### **Reporting Engine**
+- **Automated Reports**:
+  - Daily activity summaries
+  - Weekly performance reports
+  - Monthly financial reports
+  - Annual usage analytics
+  - Custom report generation
+
+### 🔮 **Future-Ready Features**
+
+#### **Integration Capabilities**
+- **Third-party Integrations**:
+  - Payment gateway integration ready
+  - SMS service integration
+  - Email service providers
+  - Cloud storage services
+  - Analytics platforms
+
+#### **Extensibility Features**
+- **Plugin Architecture**:
+  - Modular design
+  - Hook system
+  - Custom field support
+  - Theme system ready
+  - Multi-language support framework
 
 ## 🛠 Teknologi yang Digunakan
 
@@ -561,3 +1178,32 @@ Untuk akses yang lebih mudah (tanpa `/public`):
 - denda: Jumlah denda (default 0)
 - created_at, updated_at: Timestamps
 ```
+
+## 🤝 Kontribusi
+
+Kami menerima kontribusi dari semua developer! Silakan:
+
+1. **Fork** repository ini
+2. **Create feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to branch** (`git push origin feature/AmazingFeature`)
+5. **Open Pull Request**
+
+## 📄 License
+
+Project ini menggunakan [MIT License](LICENSE).
+
+---
+
+<div align="center">
+
+**📚 Sistem Perpustakaan Digital**
+
+*Made with ❤️ using Laravel & Tailwind CSS*
+
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg)](https://mysql.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+</div>
