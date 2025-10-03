@@ -32,7 +32,7 @@
     {{-- SIDEBAR --}}
     <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
-            <h1 class="text-2xl font-black text-shadow-light">iLibrary</h1>
+            <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
             <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
         </div>
 
@@ -103,10 +103,28 @@
                         </a>
                     @else
                         <ul class="divide-y divide-gray-200">
-                            @foreach($activeBorrowings as $book)
-                                <li class="py-2 flex justify-between">
-                                    <span>{{ $book->title }}</span>
-                                    <span class="text-sm text-gray-500">Kembali: {{ $book->return_date }}</span>
+                            @foreach($activeBorrowings as $borrowing)
+                                <li class="py-3 flex justify-between items-start">
+                                    <div>
+                                        <span class="font-medium text-gray-900">{{ $borrowing->buku->title }}</span>
+                                        <p class="text-sm text-gray-500 mt-1">{{ $borrowing->buku->author }}</p>
+                                        @if($borrowing->isOverdue())
+                                            <p class="text-xs text-red-600 font-medium mt-1">
+                                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                Terlambat {{ $borrowing->getDaysOverdue() }} hari
+                                            </p>
+                                        @endif
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm {{ $borrowing->isOverdue() ? 'text-red-600 font-medium' : 'text-gray-500' }}">
+                                            Kembali: {{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}
+                                        </span>
+                                        @if($borrowing->isOverdue())
+                                            <p class="text-xs text-red-600 mt-1">
+                                                Denda: Rp {{ number_format($borrowing->calculateFine(), 0, ',', '.') }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>
@@ -124,9 +142,51 @@
                     </div>
                     <div class="text-3xl font-bold">{{ now()->format('d M') }}</div>
                 </div>
-                <div class="mt-4 text-center text-gray-500">
-                    Tidak ada pinjaman aktif.
-                </div>
+                
+                @if($activeBorrowings->isEmpty())
+                    <div class="mt-4 text-center text-gray-500">
+                        Tidak ada pinjaman aktif.
+                    </div>
+                @else
+                    <div class="mt-4 space-y-2">
+                        @php
+                            $upcomingReturns = $activeBorrowings->sortBy('tanggal_kembali_rencana')->take(3);
+                        @endphp
+                        
+                        @foreach($upcomingReturns as $borrowing)
+                            @php
+                                $daysLeft = now()->diffInDays($borrowing->tanggal_kembali_rencana, false);
+                                $isOverdue = $borrowing->isOverdue();
+                            @endphp
+                            
+                            <div class="flex justify-between items-center p-2 rounded {{ $isOverdue ? 'bg-red-100' : 'bg-gray-100' }}">
+                                <div>
+                                    <p class="text-sm font-medium truncate" title="{{ $borrowing->buku->title }}">
+                                        {{ strlen($borrowing->buku->title) > 25 ? substr($borrowing->buku->title, 0, 25) . '...' : $borrowing->buku->title }}
+                                    </p>
+                                    <p class="text-xs {{ $isOverdue ? 'text-red-600' : 'text-gray-500' }}">
+                                        {{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    @if($isOverdue)
+                                        <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">
+                                            Terlambat
+                                        </span>
+                                    @elseif($daysLeft <= 2)
+                                        <span class="text-xs bg-yellow-500 text-white px-2 py-1 rounded">
+                                            {{ $daysLeft }} hari
+                                        </span>
+                                    @else
+                                        <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">
+                                            {{ $daysLeft }} hari
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -134,9 +194,58 @@
             {{-- Aktivitas Terbaru --}}
             <div class="md:col-span-2 bg-white p-5 rounded-lg shadow">
                 <h2 class="font-semibold text-lg mb-3">Aktivitas Terbaru</h2>
-                <div class="bg-gray-50 p-4 rounded-lg text-center text-gray-500">
-                    Belum ada riwayat peminjaman.
-                </div>
+                @if($borrowingHistory->isEmpty())
+                    <div class="bg-gray-50 p-4 rounded-lg text-center text-gray-500">
+                        Belum ada riwayat peminjaman.
+                    </div>
+                @else
+                    <div class="space-y-3">
+                        @foreach($borrowingHistory->take(5) as $borrowing)
+                            <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                <div class="flex-shrink-0">
+                                    @if($borrowing->status === 'dikembalikan')
+                                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-white text-sm"></i>
+                                        </div>
+                                    @elseif($borrowing->status === 'terlambat')
+                                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-clock text-white text-sm"></i>
+                                        </div>
+                                    @else
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-book text-white text-sm"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ $borrowing->buku->title }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ ucfirst($borrowing->status) }} • 
+                                        {{ $borrowing->tanggal_pinjam->format('d M Y') }}
+                                        @if($borrowing->tanggal_kembali_aktual)
+                                            - {{ $borrowing->tanggal_kembali_aktual->format('d M Y') }}
+                                        @endif
+                                    </p>
+                                    @if($borrowing->denda > 0)
+                                        <p class="text-xs text-red-600 mt-1">
+                                            Denda: Rp {{ number_format($borrowing->denda, 0, ',', '.') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                        
+                        @if($borrowingHistory->count() > 5)
+                            <div class="text-center pt-3">
+                                <a href="{{ route('borrowings.my') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                    Lihat Semua Riwayat
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
 
             {{-- Buku Tersedia (Favorit Anda) --}}
@@ -152,15 +261,15 @@
         </div>
 
         {{-- Statistik Peminjaman Bulanan --}}
-        <div class="bg-white p-5 rounded-lg shadow mt-6">
+        {{-- <div class="bg-white p-5 rounded-lg shadow mt-6">
             <h2 class="font-semibold text-lg mb-3">Statistik Peminjaman Bulanan</h2>
             <canvas id="borrowChart" height="100"></canvas>
-        </div>
+        </div> --}}
     </main>
 
     {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    {{-- <script>
         const ctx = document.getElementById('borrowChart');
         new Chart(ctx, {
             type: 'bar',
@@ -179,6 +288,6 @@
                 scales: { y: { beginAtZero: true } }
             }
         });
-    </script>
+    </script> --}}
 </body>
 </html>

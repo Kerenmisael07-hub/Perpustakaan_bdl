@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Peminjaman - iLibrary</title>
+    <title>Toshokan - Perpustakaan Buku Jepang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
@@ -180,7 +180,7 @@
     {{-- SIDEBAR KIRI (dari dashboard.blade.php - iLibrary, dengan emoji icons) --}}
     <aside class="hidden lg:block sidebar w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
-            <h1 class="text-2xl font-black text-shadow-light">iLibrary</h1>
+            <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
             <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
         </div>
 
@@ -211,7 +211,7 @@
     <main class="main-content">
         {{-- MOBILE HEADER (tanpa navbar) --}}
         <div class="lg:hidden gradient-sidebar p-4 flex justify-between items-center shadow-lg text-white mb-6">
-            <h2 class="text-xl font-bold">iLibrary</h2>
+            <h2 class="text-xl font-bold">Toshokan</h2>
             <p class="text-sm">{{ now()->locale('id')->isoFormat('D MMM Y') }}</p>
         </div>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peminjaman Saya - iLibrary</title>
+    <title>Peminjaman Saya - Toshokan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
@@ -19,7 +19,7 @@
     {{-- SIDEBAR --}}
     <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
-            <h1 class="text-2xl font-black">iLibrary</h1>
+            <h1 class="text-2xl font-black">Toshokan</h1>
             <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
         </div>
 
