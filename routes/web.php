@@ -52,3 +52,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/borrowings/{borrowing}/return', [PeminjamanController::class, 'return'])->name('borrowings.return');
     Route::get('/my-borrowings', [PeminjamanController::class, 'myBorrowings'])->name('borrowings.my');
 });
+

@@ -1,62 +1,95 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@section('title', 'Login')
+    <title>Login</title>
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 space-y-8">
-        <div>
-            <img class="mx-auto h-16 w-auto" src="{{ asset('assets/img/logo_bdl.png') }}" alt="BDL">
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Perpustakaan BDL
-            </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Sistem Informasi Perpustakaan
-            </p>
-        </div>
-        <form class="mt-8 space-y-6" action="{{ route('login') }}" method="POST">
-            @csrf
-            <div class="space-y-4">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input id="email" name="email" type="email" value="{{ old('email') }}" required 
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('email') border-red-500 @enderror" 
-                        placeholder="nama@email.com">
-                    @error('email')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input id="password" name="password" type="password" required 
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('password') border-red-500 @enderror" 
-                        placeholder="••••••••">
-                    @error('password')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                    <label for="remember_me" class="ml-2 block text-sm text-gray-900">
-                        Remember me
-                    </label>
-                </div>
-            </div>
-
+    <!-- Memuat Tailwind CSS dan Font Inter (Penting untuk tampilan) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        
+        <!-- Card Login Utama -->
+        <div class="w-full max-w-md p-10 space-y-8 bg-white rounded-xl shadow-lg border border-gray-100">
             <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg">
-                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-blue-200 group-hover:text-blue-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                        </svg>
-                    </span>
-                    Sign in
-                </button>
+                <!-- Header Card -->
+                <p class="text-sm font-medium text-gray-500">
+                    Silakan masukkan detail Anda
+                </p>
+                <h2 class="mt-1 text-3xl font-extrabold text-gray-900">
+                    Selamat datang kembali
+                </h2>
             </div>
-        </form>
+
+            <form class="space-y-6" action="{{ route('login') }}" method="POST">
+                @csrf
+                <div class="space-y-4">
+                    <!-- Input Email -->
+                    <div>
+                        <label for="email" class="sr-only">Alamat Email</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 @error('email') border-red-500 @enderror"
+                            placeholder="Alamat Email">
+                        @error('email')
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <!-- Input Password -->
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required autocomplete="current-password"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 @error('password') border-red-500 @enderror"
+                            placeholder="Password">
+                        @error('password')
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Remember Me dan Forgot Password -->
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="remember_me" class="ml-2 block text-gray-900">
+                            Ingat saya selama 30 hari
+                        </label>
+                    </div>
+                    <div class="text-blue-600 hover:text-blue-500">
+                        <a href="#" class="font-medium">
+                            Lupa kata sandi?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tombol Utama (Sign In) -->
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-95">
+                        Masuk
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Link Daftar (Sign Up) -->
+            <p class="mt-6 text-center text-sm text-gray-600">
+                Belum punya akun?
+                <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+                    Daftar sekarang
+                </a>
+            </p>
+
+        </div>
     </div>
-</div>
-@endsection
+</body>
+</html>
