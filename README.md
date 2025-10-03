@@ -121,7 +121,7 @@ erDiagram
 flowchart TD
     A[User Login] --> B[Browse Books]
     B --> C{Book Available?}
-    C -->|No| D[Show "Not Available"]
+    C -->|No| D[Show Not Available]
     C -->|Yes| E[Click Borrow]
     E --> F[Create Borrowing Record]
     F --> G[Decrease Available Copies]
