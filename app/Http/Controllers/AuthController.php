@@ -68,8 +68,20 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:500',
+        ], [
+            'name.required' => 'Nama lengkap harus diisi.',
+            'username.required' => 'Username harus diisi.',
+            'username.unique' => 'Username sudah digunakan.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+            'phone.required' => 'Nomor telepon harus diisi.',
+            'address.required' => 'Alamat harus diisi.',
         ]);
 
         $user = User::create([
@@ -85,7 +97,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         return redirect()->route('dashboard')
-            ->with('success', 'Registration successful! Welcome to the library system.');
+            ->with('success', 'Registrasi berhasil! Selamat datang di sistem perpustakaan.');
     }
 
     /**

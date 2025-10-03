@@ -84,7 +84,7 @@
             <!-- Link Daftar (Sign Up) -->
             <p class="mt-6 text-center text-sm text-gray-600">
                 Belum punya akun?
-                <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+                <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">
                     Daftar sekarang
                 </a>
             </p>

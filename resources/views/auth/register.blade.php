@@ -60,8 +60,8 @@
                     
                     <!-- Input Email -->
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email (Opsional)</label>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" 
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required
                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 @error('email') border-red-500 @enderror"
                                placeholder="Masukkan alamat email Anda">
                         @error('email')
