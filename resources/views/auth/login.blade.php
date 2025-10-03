@@ -7,7 +7,6 @@
 
     <title>Login</title>
 
-    <!-- Memuat Tailwind CSS dan Font Inter (Penting untuk tampilan) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,10 +19,8 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         
-        <!-- Card Login Utama -->
         <div class="w-full max-w-md p-10 space-y-8 bg-white rounded-xl shadow-lg border border-gray-100">
             <div>
-                <!-- Header Card -->
                 <p class="text-sm font-medium text-gray-500">
                     Silakan masukkan detail Anda
                 </p>
@@ -35,7 +32,6 @@
             <form class="space-y-6" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="space-y-4">
-                    <!-- Input Email -->
                     <div>
                         <label for="email" class="sr-only">Alamat Email</label>
                         <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="email" autofocus
@@ -45,7 +41,6 @@
                             <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                    <!-- Input Password -->
                     <div>
                         <label for="password" class="sr-only">Password</label>
                         <input id="password" name="password" type="password" required autocomplete="current-password"
@@ -57,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- Remember Me dan Forgot Password -->
                 <div class="flex items-center justify-between text-sm">
                     <div class="flex items-center">
                         <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
@@ -65,14 +59,8 @@
                             Ingat saya selama 30 hari
                         </label>
                     </div>
-                    <div class="text-blue-600 hover:text-blue-500">
-                        <a href="#" class="font-medium">
-                            Lupa kata sandi?
-                        </a>
                     </div>
-                </div>
 
-                <!-- Tombol Utama (Sign In) -->
                 <div>
                     <button type="submit"
                         class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-95">
@@ -81,7 +69,6 @@
                 </div>
             </form>
             
-            <!-- Link Daftar (Sign Up) -->
             <p class="mt-6 text-center text-sm text-gray-600">
                 Belum punya akun?
                 <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">

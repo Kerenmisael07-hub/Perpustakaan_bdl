@@ -140,7 +140,11 @@
                                         alt="{{ $book->title }}" 
                                         class="w-full h-full object-cover">
                                 @else
-                                    <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
+                                    {{-- Gambar dinamis dari Unsplash berdasarkan judul buku (relevan seperti cover asli) --}}
+                                    <img src="https://source.unsplash.com/300x400/?{{ urlencode(explode(' ', $book->title, 2)[0]) }},book,novel,manga" 
+                                        alt="{{ $book->title }} - Cover Gambar" 
+                                        class="w-full h-full object-cover"
+                                        onerror="this.src='https://placehold.co/300x400/f3f4f6/000000?text={{ urlencode(substr($book->title, 0, 20) . (strlen($book->title) > 20 ? '...' : '')) }}';">
                                 @endif
                             </div>
                             
