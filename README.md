@@ -1,563 +1,304 @@
-# Sistem Manajemen Perpustakaan - Light Novel & Manga
+# 📚 Sistem Perpustakaan Digital
 
-Sistem manajemen perpustakaan yang berfokus pada koleksi Light Novel dan Manga Jepang dengan fitur peminjaman, manajemen pengguna, dan sistem denda otomatis.
+Sistem manajemen perpustakaan digital yang berfokus pada koleksi Light Novel dan Manga dengan fitur peminjaman, pengembalian, dan sistem denda otomatis.
 
 ## 📋 Daftar Isi
 
-- [Deskripsi Proyek](#deskripsi-proyek)
-- [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
-- [Flowchart Sistem](#flowchart-sistem)
-- [Software Development Life Cycle (SDLC)](#software-development-life-cycle-sdlc)
-- [Fitur Utama](#fitur-utama)
-- [Teknologi yang Digunakan](#teknologi-yang-digunakan)
-- [Panduan Instalasi Windows (XAMPP)](#panduan-instalasi-windows-xampp)
-- [Penggunaan](#penggunaan)
-- [Struktur Database](#struktur-database)
-- [Kontribusi](#kontribusi)
+- [Deskripsi Proyek](#-deskripsi-proyek)
+- [SDLC](#-software-development-life-cycle-sdlc)
+- [ERD](#-entity-relationship-diagram-erd)
+- [Flowchart](#-flowchart-sistem)
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi](#-teknologi-yang-digunakan)
+- [Instalasi](#-panduan-instalasi)
+- [Penggunaan](#-penggunaan)
+- [Database](#-struktur-database)
+- [Kontribusi](#-kontribusi)
 
 ## 🎯 Deskripsi Proyek
 
-Sistem Manajemen Perpustakaan ini dikembangkan khusus untuk mengelola koleksi Light Novel dan Manga Jepang. Sistem ini memungkinkan administrator untuk mengelola buku, pengguna, dan peminjaman, sementara pengguna reguler dapat mencari, meminjam, dan mengembalikan buku dengan mudah.
+Sistem perpustakaan digital yang dikembangkan untuk mengelola koleksi Light Novel dan Manga. Aplikasi ini memungkinkan admin mengelola buku dan peminjaman, sementara user dapat mencari, meminjam, dan mengembalikan buku secara mandiri.
 
-### Tujuan Proyek:
-- Digitalisasi sistem perpustakaan tradisional
-- Otomatisasi proses peminjaman dan pengembalian buku
-- Sistem denda otomatis untuk keterlambatan
-- Interface yang mudah digunakan dalam Bahasa Indonesia
-- Fokus khusus pada literatur Jepang (Light Novel & Manga)
-
-## 📊 Entity Relationship Diagram (ERD)
-
-```
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│      USERS      │       │   PEMINJAMAN    │       │      BUKU       │
-├─────────────────┤       ├─────────────────┤       ├─────────────────┤
-│ id (PK)         │◄──────┤ user_id (FK)    │──────►│ id (PK)         │
-│ name            │       │ buku_id (FK)    │       │ title           │
-│ username        │       │ tanggal_pinjam  │       │ author          │
-│ email           │       │ tanggal_kembali │       │ isbn            │
-│ password        │       │ tanggal_aktual  │       │ type            │
-│ role            │       │ status          │       │ description     │
-│ phone           │       │ denda           │       │ publisher       │
-│ address         │       │ created_at      │       │ publication_date│
-│ created_at      │       │ updated_at      │       │ total_copies    │
-│ updated_at      │       └─────────────────┘       │ available_copies│
-└─────────────────┘                                 │ price           │
-                                                    │ cover_image     │
-                                                    │ is_active       │
-                                                    │ created_at      │
-                                                    │ updated_at      │
-                                                    └─────────────────┘
-```
-
-### Relasi Antar Tabel:
-
-1. **Users - Peminjaman**: One-to-Many
-   - Satu pengguna dapat memiliki banyak peminjaman
-   - Setiap peminjaman hanya milik satu pengguna
-
-2. **Buku - Peminjaman**: One-to-Many
-   - Satu buku dapat dipinjam berkali-kali (berbeda waktu)
-   - Setiap peminjaman hanya untuk satu buku
-
-## 🔄 Flowchart Sistem
-
-### Alur Autentikasi
-```
-┌─────────────┐
-│    Start    │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐    Tidak   ┌─────────────┐
-│  Akses URL  ├───────────►│   Login     │
-└─────┬───────┘            └─────┬───────┘
-      │                          │
-      │ Sudah Login              │
-      v                          v
-┌─────────────┐                ┌─────────────┐
-│  Dashboard  │                │  Validasi   │
-└─────┬───────┘                └─────┬───────┘
-      │                              │
-      │                              │ Valid
-      v                              v
-┌─────────────┐                ┌─────────────┐
-│ Cek Role    │                │  Dashboard  │
-└─────┬───────┘                └─────────────┘
-      │
-      ├─ Admin ──► Admin Dashboard
-      │
-      └─ User ───► User Dashboard
-```
-
-### Alur Peminjaman Buku
-```
-┌─────────────┐
-│  User Login │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Browse Buku │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐    Tidak   ┌─────────────┐
-│ Pilih Buku  ├───────────►│ Buku Tidak  │
-└─────┬───────┘ Tersedia   │ Tersedia    │
-      │                    └─────────────┘
-      │ Tersedia
-      v
-┌─────────────┐
-│ Cek Status  │
-│ Pengguna    │
-└─────┬───────┘
-      │
-      │ Belum Pinjam Buku Ini
-      v
-┌─────────────┐
-│ Proses      │
-│ Peminjaman  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Update      │
-│ Database    │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Konfirmasi  │
-│ Berhasil    │
-└─────────────┘
-```
-
-### Alur Pengembalian Buku
-```
-┌─────────────┐
-│ User Login  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ My Borrowing│
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Pilih Buku  │
-│ Dikembalikan│
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Hitung Denda│
-│ (Jika Ada)  │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Update      │
-│ Status      │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Tambah      │
-│ Available   │
-│ Copies      │
-└─────┬───────┘
-      │
-      v
-┌─────────────┐
-│ Konfirmasi  │
-│ Selesai     │
-└─────────────┘
-```
+### Tujuan Utama:
+- ✅ Digitalisasi sistem perpustakaan
+- ✅ Otomatisasi peminjaman dan pengembalian
+- ✅ Sistem denda otomatis
+- ✅ Interface berbahasa Indonesia
+- ✅ Fokus pada Light Novel & Manga
 
 ## 🔄 Software Development Life Cycle (SDLC)
 
-Proyek ini dikembangkan menggunakan metodologi **Waterfall** dengan tahapan sebagai berikut:
+### Metodologi: **Agile Development**
 
-### 1. 📋 Planning (Perencanaan)
-**Durasi: 1 Minggu**
-- **Analisis Kebutuhan**: Identifikasi kebutuhan sistem perpustakaan untuk Light Novel & Manga
-- **Studi Kelayakan**: Evaluasi teknologi Laravel, MySQL, dan resource yang diperlukan
-- **Estimasi Waktu**: Perencanaan timeline pengembangan
-- **Tim & Resource**: Alokasi developer dan tools yang dibutuhkan
+#### 1. **Planning** (1 minggu)
+- Analisis kebutuhan sistem perpustakaan
+- Identifikasi stakeholder (Admin & User)
+- Perencanaan fitur dan timeline
 
-**Deliverables:**
-- Dokumen requirement specification
-- Project timeline
-- Resource allocation plan
+#### 2. **Design** (1 minggu)
+- Perancangan database (ERD)
+- Desain UI/UX wireframes
+- Arsitektur sistem Laravel MVC
 
-### 2. 🎨 Analysis & Design (Analisis & Desain)
-**Durasi: 1-2 Minggu**
-- **System Architecture**: Desain arsitektur aplikasi web berbasis MVC
-- **Database Design**: Pembuatan ERD dan normalisasi database
-- **UI/UX Design**: Wireframe dan mockup interface dalam Bahasa Indonesia
-- **API Design**: Perencanaan routing dan controller structure
+#### 3. **Implementation** (3 minggu)
+- **Sprint 1**: Authentication & basic CRUD
+- **Sprint 2**: Borrowing system & fine calculation
+- **Sprint 3**: UI polishing & testing
 
-**Deliverables:**
-- Entity Relationship Diagram (ERD)
-- Database schema
-- UI/UX mockups
-- System architecture diagram
-- API documentation
+#### 4. **Testing** (1 minggu)
+- Unit testing untuk models & controllers
+- Integration testing untuk complete workflows
+- User acceptance testing
 
-### 3. 💻 Implementation (Implementasi)
-**Durasi: 3-4 Minggu**
+#### 5. **Deployment** (3 hari)
+- Production server setup
+- Database migration
+- SSL & security configuration
 
-#### Week 1: Foundation Setup
-- Setup Laravel project
-- Database migration creation
-- Basic authentication system
-- User role management
+#### 6. **Maintenance** (Ongoing)
+- Bug fixes & feature updates
+- Performance monitoring
+- Security patches
 
-#### Week 2: Core Features
-- CRUD operations untuk buku
-- Sistem peminjaman
-- Dashboard admin dan user
+## 🗄️ Entity Relationship Diagram (ERD)
 
-#### Week 3: Advanced Features
-- Sistem denda otomatis
-- Search dan filter functionality
-- File upload untuk cover buku
-- Validation dan error handling
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK
+        string name
+        string username UK
+        string email UK
+        string password
+        enum role "user, admin"
+        string phone
+        text address
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    BUKU {
+        bigint id PK
+        string title
+        string author
+        string isbn UK
+        enum type "light_novel, manga"
+        text description
+        string publisher
+        date publication_date
+        integer total_copies
+        integer available_copies
+        string cover_image
+        decimal price
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PEMINJAMAN {
+        bigint id PK
+        bigint user_id FK
+        bigint buku_id FK
+        date tanggal_pinjam
+        date tanggal_kembali_rencana
+        date tanggal_kembali_aktual
+        enum status "dipinjam, dikembalikan, terlambat"
+        decimal denda
+        text catatan
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    USERS ||--o{ PEMINJAMAN : "has many"
+    BUKU ||--o{ PEMINJAMAN : "has many"
+```
 
-#### Week 4: Finalization
-- Interface translation ke Bahasa Indonesia
-- Styling dan responsive design
-- Testing dan bug fixes
-- Documentation
+## 📊 Flowchart Sistem
 
-**Deliverables:**
-- Working application
-- Source code dengan clean coding standards
-- Database dengan sample data
+### Alur Peminjaman Buku
 
-### 4. 🧪 Testing (Pengujian)
-**Durasi: 1 Minggu**
-- **Unit Testing**: Testing individual functions dan methods
-- **Integration Testing**: Testing integrasi antar modules
-- **User Acceptance Testing**: Testing oleh end-user
-- **Performance Testing**: Testing load dan response time
-- **Security Testing**: Testing authentication dan authorization
+```mermaid
+flowchart TD
+    A[User Login] --> B[Browse Books]
+    B --> C{Book Available?}
+    C -->|No| D[Show "Not Available"]
+    C -->|Yes| E[Click Borrow]
+    E --> F[Create Borrowing Record]
+    F --> G[Decrease Available Copies]
+    G --> H[Set Return Date +7 days]
+    H --> I[Show Success Message]
+    
+    D --> B
+    I --> J[End]
+```
 
-**Test Cases:**
-- Login/Register functionality
-- CRUD operations untuk semua entities
-- Business logic (denda calculation, availability check)
-- File upload functionality
-- Role-based access control
+### Alur Pengembalian Buku
 
-**Deliverables:**
-- Test reports
-- Bug tracking dan resolution
-- Performance metrics
-
-### 5. 🚀 Deployment (Deployment)
-**Durasi: 3-5 Hari**
-- **Production Environment Setup**: Konfigurasi server production
-- **Database Migration**: Deploy database ke production
-- **Application Deployment**: Deploy source code
-- **SSL Configuration**: Setup keamanan
-- **Monitoring Setup**: Setup logging dan monitoring
-
-**Deliverables:**
-- Live application
-- Deployment documentation
-- User manual
-- Admin guide
-
-### 6. 🔧 Maintenance (Pemeliharaan)
-**Ongoing Process**
-- **Bug Fixes**: Perbaikan issues yang ditemukan
-- **Feature Updates**: Penambahan fitur baru sesuai feedback
-- **Security Updates**: Update keamanan framework dan dependencies
-- **Performance Optimization**: Optimasi database dan aplikasi
-- **Backup Management**: Backup data reguler
-
-**Aktivitas Maintenance:**
-- Weekly monitoring dan health checks
-- Monthly security updates
-- Quarterly feature reviews
-- Yearly major updates
+```mermaid
+flowchart TD
+    A[User Return Book] --> B{Return Date Passed?}
+    B -->|No| C[Normal Return]
+    B -->|Yes| D[Calculate Fine]
+    C --> E[Update Status: returned]
+    D --> F[Fine = Days × Rp 7,000]
+    F --> G[Update Status: late]
+    E --> H[Increase Available Copies]
+    G --> H
+    H --> I[Show Return Confirmation]
+```
 
 ## ✨ Fitur Utama
 
-### 👨‍💼 Admin Features:
-- **Dashboard Komprehensif**: Statistik lengkap sistem
-- **Manajemen Buku**: CRUD lengkap untuk koleksi buku
-- **Manajemen Peminjaman**: Monitoring semua aktivitas peminjaman
-- **Manajemen Pengguna**: Lihat semua pengguna terdaftar
-- **Laporan Keterlambatan**: Tracking buku yang terlambat dikembalikan
-- **Sistem Denda**: Kalkulasi otomatis denda keterlambatan
+### 👨‍💼 Admin Features
+- **Dashboard**: Statistik sistem lengkap
+- **Manajemen Buku**: CRUD buku dengan cover upload
+- **Manajemen User**: Monitor semua pengguna
+- **Peminjaman**: Create, monitor, dan process returns
+- **Laporan**: Overdue tracking & fine reports
 
-### 👤 User Features:
-- **Browse Koleksi**: Pencarian dan filter buku berdasarkan jenis
-- **Peminjaman Mandiri**: Pinjam buku secara langsung
-- **Riwayat Peminjaman**: Lihat history peminjaman pribadi
-- **Status Real-time**: Cek status peminjaman dan denda
-- **Notifikasi Denda**: Informasi denda jika terlambat mengembalikan
+### 👤 User Features
+- **Browse Buku**: Search & filter berdasarkan kategori
+- **Peminjaman**: Self-service borrowing
+- **My Borrowings**: Track active loans & history
+- **Return Books**: Self-service returns
+- **Profile**: Manage personal information
 
-### 🔧 System Features:
-- **Autentikasi Ganda**: Login dengan username atau email
-- **Role-Based Access**: Pembedaan akses admin dan user
-- **Responsive Design**: Compatible untuk desktop dan mobile
-- **File Upload**: Upload cover buku dengan validasi
-- **Search & Filter**: Pencarian advanced dengan multiple criteria
-- **Pagination**: Navigasi data yang optimal
+### 🔧 System Features
+- **Authentication**: Role-based access (Admin/User)
+- **Fine System**: Auto-calculate Rp 7,000/day
+- **Responsive**: Mobile & desktop optimized
+- **Security**: CSRF protection, input validation
+- **Performance**: Optimized queries & caching
 
 ## 🛠 Teknologi yang Digunakan
 
-### Backend:
+### Backend
 - **Framework**: Laravel 11
 - **Language**: PHP 8.2+
 - **Database**: MySQL 8.0+
 - **Authentication**: Laravel Sanctum
-- **File Storage**: Laravel Storage
+- **Storage**: Laravel Storage
 
-### Frontend:
-- **Template Engine**: Blade
-- **Styling**: Custom CSS (Responsive)
-- **JavaScript**: Vanilla JS untuk interaktivity
+### Frontend
+- **Template**: Blade Templates
+- **Styling**: Tailwind CSS
+- **JavaScript**: Vanilla JS
+- **Icons**: Font Awesome
 
-### Development Tools:
-- **Dependency Manager**: Composer
-- **Asset Building**: Vite
+### Development Tools
+- **Package Manager**: Composer
+- **Build Tool**: Vite
 - **Version Control**: Git
 - **Testing**: PHPUnit
 
-### Server Requirements:
-- **Web Server**: Apache/Nginx
-- **PHP**: >= 8.2
-- **Extensions**: OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath, Fileinfo
-- **Database**: MySQL 8.0+ / PostgreSQL 13+
+## 🚀 Panduan Instalasi
 
-## 🚀 Panduan Instalasi Windows (XAMPP)
-
-### Prerequisites:
-- Windows 10/11
-- XAMPP (Apache, MySQL, PHP 8.2+)
-- Git for Windows
+### Prerequisites
+- PHP 8.2+
 - Composer
+- MySQL 8.0+
+- Node.js & NPM
 
-### Langkah 1: Install XAMPP
-1. Download XAMPP dari [https://www.apachefriends.org/](https://www.apachefriends.org/)
-2. Pilih versi dengan PHP 8.2 atau lebih tinggi
-3. Install XAMPP di `C:\xampp`
-4. Jalankan XAMPP Control Panel sebagai Administrator
-5. Start Apache dan MySQL services
-
-### Langkah 2: Install Composer
-1. Download Composer dari [https://getcomposer.org/download/](https://getcomposer.org/download/)
-2. Install Composer secara global
-3. Verifikasi instalasi dengan membuka Command Prompt dan jalankan:
-   ```bash
-   composer --version
-   ```
-
-### Langkah 3: Install Git (Optional)
-1. Download Git dari [https://git-scm.com/download/win](https://git-scm.com/download/win)
-2. Install dengan konfigurasi default
-3. Verifikasi dengan:
-   ```bash
-   git --version
-   ```
-
-### Langkah 4: Setup Database
-1. Buka browser dan akses `http://localhost/phpmyadmin`
-2. Login dengan:
-   - Username: `root`
-   - Password: (kosong/blank)
-3. Buat database baru:
-   ```sql
-   CREATE DATABASE perpustakaan_bdl CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-
-### Langkah 5: Clone/Download Project
+### Quick Start
 ```bash
-# Jika menggunakan Git
-git clone https://github.com/rwbu69/Perpustakaan_BDL.git C:\xampp\htdocs\perpustakaan
+# Clone repository
+git clone https://github.com/your-repo/perpustakaan-bdl.git
+cd perpustakaan-bdl
 
-# Atau download ZIP dan extract ke C:\xampp\htdocs\perpustakaan
-```
+# Install dependencies
+composer install
+npm install
 
-### Langkah 6: Install Dependencies
-1. Buka Command Prompt sebagai Administrator
-2. Navigate ke folder project:
-   ```bash
-   cd C:\xampp\htdocs\perpustakaan
-   ```
-3. Install PHP dependencies:
-   ```bash
-   composer install
-   ```
-
-### Langkah 7: Environment Configuration
-1. Copy file environment:
-   ```bash
-   copy .env.example .env
-   ```
-2. Edit file `.env` dengan notepad atau text editor:
-   ```env
-   APP_NAME="Sistem Manajemen Perpustakaan"
-   APP_ENV=local
-   APP_KEY=
-   APP_DEBUG=true
-   APP_URL=http://localhost/perpustakaan/public
-
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=perpustakaan_bdl
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-
-### Langkah 8: Generate Application Key
-```bash
+# Setup environment
+cp .env.example .env
 php artisan key:generate
-```
 
-### Langkah 9: Database Migration & Seeding
-```bash
-# Jalankan migrasi database
+# Configure database in .env file
+DB_DATABASE=perpustakaan_bdl
+DB_USERNAME=root
+DB_PASSWORD=
+
+# Run migrations & seed
 php artisan migrate
-
-# Jalankan seeder untuk data contoh
 php artisan db:seed
-```
 
-### Langkah 10: Storage Link
-```bash
+# Setup storage & assets
 php artisan storage:link
+npm run build
+
+# Start server
+php artisan serve
 ```
 
-### Langkah 11: Set Permissions (Opsional untuk Windows)
-Pastikan folder `storage` dan `bootstrap/cache` memiliki write permissions.
-
-### Langkah 12: Testing Installation
-1. Buka browser dan akses: `http://localhost/perpustakaan/public`
-2. Anda akan diarahkan ke halaman login
-3. Gunakan akun default:
-   - **Admin**:
-     - Username: `admin`
-     - Password: `password`
-   - **User**: 
-     - Username: `takeshi`
-     - Password: `password`
-
-### Troubleshooting Umum:
-
-#### Error: "Class 'PDO' not found"
-1. Buka `C:\xampp\php\php.ini`
-2. Uncomment line: `extension=pdo_mysql`
-3. Restart Apache
-
-#### Error: "The only supported ciphers are AES-128-CBC and AES-256-CBC"
-```bash
-php artisan key:generate
-```
-
-#### Error: Database Connection
-1. Pastikan MySQL service di XAMPP sudah running
-2. Verifikasi kredensial database di file `.env`
-3. Test koneksi database melalui phpMyAdmin
-
-#### Error: File Permissions
-1. Berikan write permission ke folder `storage` dan `bootstrap/cache`
-2. Di Windows, klik kanan → Properties → Security → Edit → Full Control
-
-#### Error: "Route not found"
-Pastikan mengakses aplikasi melalui: `http://localhost/perpustakaan/public`
-
-### Konfigurasi Apache Virtual Host (Opsional)
-Untuk akses yang lebih mudah (tanpa `/public`):
-
-1. Edit `C:\xampp\apache\conf\extra\httpd-vhosts.conf`
-2. Tambahkan:
-   ```apache
-   <VirtualHost *:80>
-       DocumentRoot "C:/xampp/htdocs/perpustakaan/public"
-       ServerName perpustakaan.local
-       <Directory "C:/xampp/htdocs/perpustakaan/public">
-           AllowOverride All
-           Require all granted
-       </Directory>
-   </VirtualHost>
-   ```
-3. Edit `C:\Windows\System32\drivers\etc\hosts` (sebagai Administrator)
-4. Tambahkan: `127.0.0.1 perpustakaan.local`
-5. Restart Apache
-6. Akses via: `http://perpustakaan.local`
+### Default Accounts
+- **Admin**: username `admin`, password `password`
+- **User**: username `takeshi`, password `password`
 
 ## 📖 Penggunaan
 
-### Untuk Administrator:
-1. **Login** dengan akun admin
-2. **Dashboard** - Lihat statistik sistem secara keseluruhan
-3. **Kelola Buku** - Tambah, edit, hapus buku dari koleksi
-4. **Kelola Peminjaman** - Monitor dan kelola semua peminjaman
-5. **Lihat Laporan** - Cek buku yang terlambat dan denda
+### Admin Workflow
+1. Login dengan akun admin
+2. Kelola buku di menu "Books"
+3. Monitor peminjaman di "Borrowings"
+4. Cek overdue di "Reports"
+5. Process returns & fines
 
-### Untuk Pengguna:
-1. **Registrasi/Login** - Buat akun atau masuk ke sistem
-2. **Browse Buku** - Cari dan lihat koleksi yang tersedia
-3. **Pinjam Buku** - Pinjam buku yang diinginkan
-4. **Monitor Status** - Cek status peminjaman dan denda
-5. **Kembalikan Buku** - Proses pengembalian buku
+### User Workflow
+1. Register/Login ke sistem
+2. Browse & search buku
+3. Pinjam buku yang tersedia
+4. Monitor di "My Borrowings"
+5. Return buku sebelum due date
 
-### Aturan Peminjaman:
-- **Durasi Standard**: 7 hari
-- **Denda Keterlambatan**: Rp 7.000 per hari
-- **Maksimal Peminjaman**: Sesuai ketersediaan buku
-- **Perpanjangan**: Tidak tersedia (harus dikembalikan dulu)
+### Aturan Peminjaman
+- **Durasi**: 7 hari
+- **Denda**: Rp 7,000/hari keterlambatan
+- **Limit**: Sesuai ketersediaan buku
 
 ## 📊 Struktur Database
 
 ### Tabel Users
-```sql
-- id: Primary Key (Auto Increment)
-- name: Nama lengkap pengguna
-- username: Username unik untuk login
-- email: Email pengguna (nullable)
-- password: Password yang di-hash
-- role: 'admin' atau 'user'
-- phone: Nomor telepon
-- address: Alamat lengkap
-- created_at, updated_at: Timestamps
-```
+- `id`, `name`, `username`, `email`, `password`
+- `role` (admin/user), `phone`, `address`
+- `created_at`, `updated_at`
 
 ### Tabel Buku
-```sql
-- id: Primary Key (Auto Increment)
-- title: Judul buku
-- author: Penulis buku
-- isbn: Nomor ISBN (nullable, unique)
-- type: 'light_novel' atau 'manga'
-- description: Deskripsi buku (nullable)
-- publisher: Penerbit (nullable)
-- publication_date: Tanggal terbit (nullable)
-- total_copies: Total eksemplar
-- available_copies: Eksemplar tersedia
-- price: Harga buku (nullable)
-- cover_image: Path gambar cover (nullable)
-- is_active: Status aktif (boolean)
-- created_at, updated_at: Timestamps
-```
+- `id`, `title`, `author`, `isbn`
+- `type` (light_novel/manga), `description`
+- `publisher`, `publication_date`
+- `total_copies`, `available_copies`
+- `cover_image`, `price`, `is_active`
 
 ### Tabel Peminjaman
-```sql
-- id: Primary Key (Auto Increment)
-- user_id: Foreign Key ke tabel users
-- buku_id: Foreign Key ke tabel buku
-- tanggal_pinjam: Tanggal peminjaman
-- tanggal_kembali_rencana: Tanggal jatuh tempo
-- tanggal_kembali_aktual: Tanggal pengembalian aktual (nullable)
-- status: 'dipinjam', 'dikembalikan', 'terlambat'
-- denda: Jumlah denda (default 0)
-- created_at, updated_at: Timestamps
-```
+- `id`, `user_id`, `buku_id`
+- `tanggal_pinjam`, `tanggal_kembali_rencana`
+- `tanggal_kembali_aktual`, `status`
+- `denda`, `catatan`
+
+## 🤝 Kontribusi
+
+1. Fork repository
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open Pull Request
+
+## 📄 License
+
+MIT License - lihat file [LICENSE](LICENSE) untuk detail.
+
+---
+
+<div align="center">
+
+**📚 Sistem Perpustakaan Digital**
+
+*Made with ❤️ using Laravel & Tailwind CSS*
+
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg)](https://mysql.com)
+
+**© 2025 - Sistem Perpustakaan Digital**
+
+</div>
