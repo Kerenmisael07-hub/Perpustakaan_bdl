@@ -89,6 +89,41 @@ class BukuController extends Controller
 
     public function borrow(Request $request, Buku $buku)
     {
-        // ... kode borrow
+        $user = auth()->user();
+        
+        // Validasi apakah user adalah regular user (bukan admin)
+        if (!$user->isUser()) {
+            return back()->with('error', 'Hanya user biasa yang dapat meminjam buku.');
+        }
+        
+        // Validasi apakah buku tersedia
+        if (!$buku->isAvailable()) {
+            return back()->with('error', 'Buku tidak tersedia untuk dipinjam.');
+        }
+        
+        // Validasi apakah user sudah meminjam buku yang sama dan belum dikembalikan
+        $existingBorrowing = $user->peminjaman()
+            ->where('buku_id', $buku->id)
+            ->where('status', 'dipinjam')
+            ->first();
+            
+        if ($existingBorrowing) {
+            return back()->with('error', 'Anda sudah meminjam buku ini. Kembalikan terlebih dahulu sebelum meminjam lagi.');
+        }
+        
+        // Buat record peminjaman baru
+        $borrowing = $user->peminjaman()->create([
+            'buku_id' => $buku->id,
+            'tanggal_pinjam' => now(),
+            'tanggal_kembali_rencana' => now()->addDays(7), // 7 hari dari sekarang
+            'status' => 'dipinjam',
+            'denda' => 0,
+        ]);
+        
+        // Kurangi available_copies
+        $buku->decrement('available_copies');
+        
+        return back()->with('success', 'Buku berhasil dipinjam! Harap kembalikan sebelum ' . 
+            $borrowing->tanggal_kembali_rencana->format('d M Y') . '.');
     }
 }

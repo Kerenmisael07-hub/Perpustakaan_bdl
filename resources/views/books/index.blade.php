@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Buku - iLibrary</title>
+    <title>Daftar Buku - Toshokan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-z1w1d/r6Q6a1g+D99+X3P8sA8+f0I/N3n7+T3w9a/kE5e4rFvG2rV1V1aB1e5+fN7k2i8W6/5+a7H7/x+cQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -44,7 +44,7 @@
     {{-- SIDEBAR --}}
     <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
-            <h1 class="text-2xl font-black text-shadow-light">iLibrary</h1>
+            <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
             <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
         </div>
 
@@ -133,27 +133,66 @@
             @if($books->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
                     @foreach($books as $book)
-                        <a href="{{ route('books.show', $book) }}" class="book-card block">
-                            <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
-                                @if($book->cover_image)
-                                    <img src="{{ asset('storage/' . $book->cover_image) }}" 
-                                        alt="{{ $book->title }}" 
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
-                                @endif
-                            </div>
+                        <div class="book-card">
+                            <a href="{{ route('books.show', $book) }}" class="block">
+                                <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
+                                    @if($book->cover_image)
+                                        <img src="{{ asset('storage/' . $book->cover_image) }}" 
+                                            alt="{{ $book->title }}" 
+                                            class="w-full h-full object-cover">
+                                    @else
+                                        <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
+                                    @endif
+                                </div>
+                                
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        <i class="fas fa-user mr-1"></i>{{ $book->author }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        <i class="fas fa-calendar-alt mr-1"></i>{{ $book->publication_date ? $book->publication_date->format('Y') : 'N/A' }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        <i class="fas fa-book mr-1"></i>{{ ucfirst(str_replace('_', ' ', $book->type)) }}
+                                    </p>
+                                    <p class="text-sm mt-2">
+                                        <span class="inline-block px-2 py-1 text-xs rounded-full {{ $book->available_copies > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            {{ $book->available_copies > 0 ? 'Tersedia (' . $book->available_copies . ')' : 'Tidak Tersedia' }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </a>
                             
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
-                                <p class="text-sm text-gray-500">
-                                    <i class="fas fa-user mr-1"></i>{{ $book->author }}
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    <i class="fas fa-calendar-alt mr-1"></i>{{ $book->year_published ?? 'N/A' }}
-                                </p>
-                            </div>
-                        </a>
+                            {{-- Tombol Pinjam untuk User --}}
+                            @if(auth()->user()->isUser())
+                                <div class="px-4 pb-4">
+                                    @php
+                                        $userHasBorrowed = $book->peminjaman()
+                                            ->where('user_id', auth()->id())
+                                            ->where('status', 'dipinjam')
+                                            ->exists();
+                                    @endphp
+                                    
+                                    @if($userHasBorrowed)
+                                        <button class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
+                                            <i class="fas fa-clock mr-2"></i>Sedang Dipinjam
+                                        </button>
+                                    @elseif($book->isAvailable())
+                                        <form method="POST" action="{{ route('books.borrow', $book) }}" class="w-full" onclick="event.stopPropagation();">
+                                            @csrf
+                                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition duration-200">
+                                                <i class="fas fa-download mr-2"></i>Pinjam Buku
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
+                                            <i class="fas fa-ban mr-2"></i>Tidak Tersedia
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
                     @endforeach
                 </div>
 
