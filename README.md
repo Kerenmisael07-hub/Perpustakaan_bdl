@@ -30,35 +30,53 @@ Sistem perpustakaan digital yang dikembangkan untuk mengelola koleksi Light Nove
 
 ### Metodologi: **Agile Development**
 
-#### 1. **Planning** (1 minggu)
-- Analisis kebutuhan sistem perpustakaan
+#### 1. **Planning** (1 hari)
+- Analisis kebutuhan sistem perpustakaan digital
 - Identifikasi stakeholder (Admin & User)
-- Perencanaan fitur dan timeline
+- Perencanaan fitur utama: peminjaman, pengembalian, dan sistem denda
+- Definisi requirements dan acceptance criteria
 
-#### 2. **Design** (1 minggu)
-- Perancangan database (ERD)
-- Desain UI/UX wireframes
-- Arsitektur sistem Laravel MVC
+#### 2. **Development** (4 hari)
 
-#### 3. **Implementation** (3 minggu)
-- **Sprint 1**: Authentication & basic CRUD
-- **Sprint 2**: Borrowing system & fine calculation
-- **Sprint 3**: UI polishing & testing
+##### **Tech Stack:**
+- **Backend**: Laravel 11, PHP 8.2+, MySQL 8.0+
+- **Frontend**: Blade Templates, Tailwind CSS, Font Awesome
+- **Tools**: Composer, Vite, Git
 
-#### 4. **Testing** (1 minggu)
-- Unit testing untuk models & controllers
-- Integration testing untuk complete workflows
-- User acceptance testing
+##### **MVC Architecture Implementation:**
 
-#### 5. **Deployment** (3 hari)
-- Production server setup
-- Database migration
-- SSL & security configuration
+**Models (3 entities):**
+- `User.php` - Manajemen pengguna dengan role admin/user
+- `Buku.php` - Entitas buku dengan sistem ketersediaan
+- `Peminjaman.php` - Relasi peminjaman dengan sistem denda otomatis
 
-#### 6. **Maintenance** (Ongoing)
-- Bug fixes & feature updates
-- Performance monitoring
-- Security patches
+**Controllers (4 controllers):**
+- `AuthController.php` - Authentication & authorization
+- `DashboardController.php` - Dashboard admin & user dengan statistik
+- `BukuController.php` - CRUD buku + sistem peminjaman
+- `PeminjamanController.php` - Manajemen peminjaman & pengembalian
+
+**Views (Organized by module):**
+- `auth/` - Login & register pages
+- `dashboard/` - Admin & user dashboards
+- `books/` - Book listing, detail, & CRUD forms
+- `borrowings/` - Borrowing history & management
+- `layouts/` - Main layout dengan responsive sidebar
+
+**Key Features Implemented:**
+- Role-based authentication (admin/user)
+- CRUD operations untuk semua entities
+- Real-time borrowing dengan validasi ketersediaan
+- Sistem denda otomatis (Rp 7,000/hari)
+- Upload cover image untuk buku
+- Responsive design dengan Tailwind CSS
+- Search & filter functionality
+
+#### 3. **Testing** (1 hari)
+- Unit testing untuk business logic
+- Integration testing untuk borrowing workflow
+- User acceptance testing untuk semua fitur
+- Performance testing dan optimization
 
 ## 🗄️ Entity Relationship Diagram (ERD)
 
@@ -172,24 +190,38 @@ flowchart TD
 
 ## 🛠 Teknologi yang Digunakan
 
-### Backend
-- **Framework**: Laravel 11
-- **Language**: PHP 8.2+
-- **Database**: MySQL 8.0+
-- **Authentication**: Laravel Sanctum
-- **Storage**: Laravel Storage
+### Backend Framework
+- **Laravel 11**: Modern PHP framework dengan MVC architecture
+- **PHP 8.2+**: Latest PHP version dengan improved performance
+- **MySQL 8.0+**: Relational database dengan JSON support
+- **Eloquent ORM**: Laravel's built-in ORM untuk database operations
 
-### Frontend
-- **Template**: Blade Templates
-- **Styling**: Tailwind CSS
-- **JavaScript**: Vanilla JS
-- **Icons**: Font Awesome
+### Frontend Technology
+- **Blade Templates**: Laravel's templating engine
+- **Tailwind CSS**: Utility-first CSS framework
+- **Vanilla JavaScript**: Untuk interactive components
+- **Font Awesome**: Icon library untuk UI elements
 
 ### Development Tools
-- **Package Manager**: Composer
-- **Build Tool**: Vite
-- **Version Control**: Git
-- **Testing**: PHPUnit
+- **Composer**: PHP dependency manager
+- **Vite**: Fast build tool untuk asset compilation
+- **Git**: Version control system
+- **PHPUnit**: Testing framework untuk PHP
+
+### Key Laravel Features Used
+- **Authentication**: Built-in auth system dengan custom middleware
+- **Eloquent Relationships**: HasMany, BelongsTo relationships
+- **Form Validation**: Server-side validation rules
+- **File Storage**: Image upload dengan Laravel Storage
+- **Migrations**: Database schema management
+- **Seeders**: Sample data untuk development
+
+### Security Features
+- **CSRF Protection**: Cross-site request forgery protection
+- **SQL Injection Prevention**: Eloquent ORM protection
+- **Password Hashing**: Bcrypt encryption
+- **Input Validation**: Comprehensive form validation
+- **Role-based Access Control**: Admin vs User permissions
 
 ## 🚀 Panduan Instalasi
 
