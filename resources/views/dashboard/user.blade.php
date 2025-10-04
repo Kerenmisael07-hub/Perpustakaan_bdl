@@ -46,7 +46,7 @@
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
                 <span class="text-xl">🏠</span><span>Dashboard</span>
             </a>
-            <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
+            <a href="{{ route('books.browse') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
                 <span class="text-xl">📚</span><span>Jelajahi Buku</span>
             </a>
             <a href="{{ route('borrowings.my') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
@@ -98,7 +98,7 @@
                 <div class="bg-gray-50 p-4 rounded-lg text-center">
                     @if($activeBorrowings->isEmpty())
                         <p class="text-gray-500 mb-3">Anda tidak sedang meminjam buku apapun.</p>
-                        <a href="{{ route('books.index') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                        <a href="{{ route('books.browse') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                             Jelajahi Buku
                         </a>
                     @else

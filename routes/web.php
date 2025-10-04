@@ -27,7 +27,8 @@ Route::middleware('auth')->group(function () {
     
     // Admin only routes (must come before parameterized routes)
     Route::middleware('admin')->group(function () {
-        // Book management
+        // Book management for admin
+        Route::get('/books', [BukuController::class, 'index'])->name('books.index');
         Route::get('/books/create', [BukuController::class, 'create'])->name('books.create');
         Route::post('/books', [BukuController::class, 'store'])->name('books.store');
         Route::get('/books/{buku}/edit', [BukuController::class, 'edit'])->name('books.edit');
@@ -41,10 +42,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/overdue', [PeminjamanController::class, 'overdue'])->name('borrowings.overdue');
     });
     
-    // Books routes - all users can view (these come after specific routes)
-    Route::get('/books', [BukuController::class, 'index'])->name('books.index');
-    Route::get('/books/{buku}', [BukuController::class, 'show'])->name('books.show');
-    Route::post('/books/{buku}/borrow', [BukuController::class, 'borrow'])->name('books.borrow');
+    // User only routes for browsing books
+    Route::middleware('user')->group(function () {
+        Route::get('/browse-books', [BukuController::class, 'browse'])->name('books.browse');
+        Route::get('/browse-books/{buku}', [BukuController::class, 'show'])->name('books.show');
+        Route::post('/books/{buku}/borrow', [BukuController::class, 'borrow'])->name('books.borrow');
+    });
     
     // Borrowings routes - all users
     Route::get('/borrowings', [PeminjamanController::class, 'index'])->name('borrowings.index');

@@ -45,11 +45,11 @@
     <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
             <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
-            <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
+            <p class="text-xs opacity-80 mt-1">Dashboard Admin</p>
         </div>
 
         <div class="flex flex-col items-center mb-6 border-b border-white/20 pb-4">
-            <img src="https://placehold.co/80x80/FFFFFF/000?text=USER" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+            <img src="https://placehold.co/80x80/FFFFFF/000?text=ADMIN" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
             <p class="mt-3 font-semibold text-lg">{{ auth()->user()->name }}</p>
             <p class="text-xs opacity-75">{{ now()->locale('id')->isoFormat('dddd, D MMM Y') }}</p>
         </div>
@@ -60,14 +60,19 @@
         <span class="text-xl">🏠</span><span>Dashboard</span>
     </a>
     
-    {{-- Jelajahi Buku --}}
-    <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('books.index') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
-        <span class="text-xl">📚</span><span>Jelajahi Buku</span>
+    {{-- Kelola Buku --}}
+    <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
+        <span class="text-xl">📚</span><span>Kelola Buku</span>
     </a>
     
-    {{-- Riwayat Pinjaman --}}
-    <a href="{{ route('borrowings.my') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('borrowings.my') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
-        <span class="text-xl">📜</span><span>Riwayat Pinjaman</span>
+    {{-- Kelola Peminjaman --}}
+    <a href="{{ route('borrowings.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('borrowings.index') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
+        <span class="text-xl">📋</span><span>Kelola Peminjaman</span>
+    </a>
+    
+    {{-- Buku Terlambat --}}
+    <a href="{{ route('borrowings.overdue') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('borrowings.overdue') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
+        <span class="text-xl">⚠️</span><span>Buku Terlambat</span>
     </a>
     
     {{-- Keluar --}}
@@ -83,14 +88,31 @@
     {{-- MAIN CONTENT --}}
     <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
         <div class="max-w-7xl mx-auto">
+            {{-- Flash Messages --}}
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                </div>
+            @endif
+
             {{-- Header --}}
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-900">Koleksi Buku Perpustakaan</h1>
-                @if(auth()->user()->isAdmin())
-                    <a href="{{ route('books.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition">
-                        <i class="fas fa-plus mr-2"></i> Tambah Buku Baru
-                    </a>
-                @endif
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Buku Perpustakaan</h1>
+                <a href="{{ route('books.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition">
+                    <i class="fas fa-plus mr-2"></i> Tambah Buku Baru
+                </a>
             </div>
 
             {{-- Search and Filters --}}
@@ -134,64 +156,49 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
                     @foreach($books as $book)
                         <div class="book-card">
-                            <a href="{{ route('books.show', $book) }}" class="block">
-                                <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
-                                    @if($book->cover_image)
-                                        <img src="{{ asset('storage/' . $book->cover_image) }}" 
-                                            alt="{{ $book->title }}" 
-                                            class="w-full h-full object-cover">
-                                    @else
-                                        <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
-                                    @endif
-                                </div>
-                                
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
-                                    <p class="text-sm text-gray-500">
-                                        <i class="fas fa-user mr-1"></i>{{ $book->author }}
-                                    </p>
-                                    <p class="text-sm text-gray-500">
-                                        <i class="fas fa-calendar-alt mr-1"></i>{{ $book->publication_date ? $book->publication_date->format('Y') : 'N/A' }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 mt-2">
-                                        <i class="fas fa-book mr-1"></i>{{ ucfirst(str_replace('_', ' ', $book->type)) }}
-                                    </p>
-                                    <p class="text-sm mt-2">
-                                        <span class="inline-block px-2 py-1 text-xs rounded-full {{ $book->available_copies > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ $book->available_copies > 0 ? 'Tersedia (' . $book->available_copies . ')' : 'Tidak Tersedia' }}
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
+                            <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
+                                @if($book->cover_image)
+                                    <img src="{{ asset('storage/' . $book->cover_image) }}" 
+                                        alt="{{ $book->title }}" 
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
+                                @endif
+                            </div>
                             
-                            {{-- Tombol Pinjam untuk User --}}
-                            @if(auth()->user()->isUser())
-                                <div class="px-4 pb-4">
-                                    @php
-                                        $userHasBorrowed = $book->peminjaman()
-                                            ->where('user_id', auth()->id())
-                                            ->where('status', 'dipinjam')
-                                            ->exists();
-                                    @endphp
-                                    
-                                    @if($userHasBorrowed)
-                                        <button class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
-                                            <i class="fas fa-clock mr-2"></i>Sedang Dipinjam
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>{{ $book->author }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-1"></i>{{ $book->publication_date ? $book->publication_date->format('Y') : 'N/A' }}
+                                </p>
+                                <p class="text-sm text-gray-500 mt-2">
+                                    <i class="fas fa-book mr-1"></i>{{ ucfirst(str_replace('_', ' ', $book->type)) }}
+                                </p>
+                                <p class="text-sm mt-2">
+                                    <span class="inline-block px-2 py-1 text-xs rounded-full {{ $book->available_copies > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $book->available_copies > 0 ? 'Tersedia (' . $book->available_copies . ')' : 'Tidak Tersedia' }}
+                                    </span>
+                                </p>
+                                
+                                {{-- Admin Actions --}}
+                                <div class="mt-3 flex gap-2">
+                                    <a href="{{ route('books.edit', $book) }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded text-center text-sm font-semibold transition">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </a>
+                                    <form method="POST" action="{{ route('books.destroy', $book) }}" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded text-sm font-semibold transition">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
                                         </button>
-                                    @elseif($book->isAvailable())
-                                        <form method="POST" action="{{ route('books.borrow', $book) }}" class="w-full" onclick="event.stopPropagation();">
-                                            @csrf
-                                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition duration-200">
-                                                <i class="fas fa-download mr-2"></i>Pinjam Buku
-                                            </button>
-                                        </form>
-                                    @else
-                                        <button class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
-                                            <i class="fas fa-ban mr-2"></i>Tidak Tersedia
-                                        </button>
-                                    @endif
+                                    </form>
                                 </div>
-                            @endif
+                            </div>
+                            
+                            {{-- Admin tidak memiliki tombol pinjam --}}
                         </div>
                     @endforeach
                 </div>
@@ -226,11 +233,9 @@
                         </a>
                     @else
                         <p class="text-gray-600 mb-4">Belum ada buku dalam koleksi perpustakaan.</p>
-                        @if(auth()->user()->isAdmin())
-                            <a href="{{ route('books.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition">
-                                <i class="fas fa-plus mr-2"></i> Tambah Buku Pertama
-                            </a>
-                        @endif
+                        <a href="{{ route('books.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition">
+                            <i class="fas fa-plus mr-2"></i> Tambah Buku Pertama
+                        </a>
                     @endif
                 </div>
             @endif

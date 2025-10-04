@@ -35,7 +35,7 @@
     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('dashboard') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
         <span class="text-xl">🏠</span><span>Dashboard</span>
     </a>
-    <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('books.index') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
+    <a href="{{ route('books.browse') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('books.browse') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
         <span class="text-xl">📚</span><span>Jelajahi Buku</span>
     </a>
     <a href="{{ route('borrowings.my') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100 {{ request()->routeIs('borrowings.my') ? 'bg-white/30 font-semibold opacity-100' : '' }}">
@@ -90,7 +90,7 @@
         <div class="bg-white text-center rounded-xl shadow-md p-6 mb-6">
             <h3 class="font-semibold">Tidak Ada Pinjaman Aktif</h3>
             <p class="text-gray-500 mb-3">Anda belum meminjam buku apapun.</p>
-            <a href="{{ route('books.index') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Jelajahi Buku</a>
+            <a href="{{ route('books.browse') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Jelajahi Buku</a>
         </div>
         @endif
 

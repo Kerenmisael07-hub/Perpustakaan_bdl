@@ -1,124 +1,216 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajahi Buku - Toshokan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-z1w1d/r6Q6a1g+D99+X3P8sA8+f0I/N3n7+T3w9a/kE5e4rFvG2rV1V1aB1e5+fN7k2i8W6/5+a7H7/x+cQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        .font-sans { font-family: 'Inter', sans-serif; }
+        .gradient-sidebar {
+            background: linear-gradient(180deg, #0093E9 0%, #37a0ff 100%);
+        }
+        .text-shadow-light {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .book-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen bg-gray-50 flex h-screen overflow-hidden">
 
-@section('title', $buku->title)
+    {{-- SIDEBAR --}}
+    <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
+        <div class="mb-8">
+            <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
+            <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
+        </div>
 
-@section('content')
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1>{{ $buku->title }}</h1>
-    <a href="{{ route('books.index') }}" class="btn">Kembali ke Daftar Buku</a>
-</div>
+        <div class="flex flex-col items-center mb-6 border-b border-white/20 pb-4">
+            <img src="https://placehold.co/80x80/FFFFFF/000?text=USER" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+            <p class="mt-3 font-semibold text-lg">{{ auth()->user()->name }}</p>
+            <p class="text-xs opacity-75">{{ now()->locale('id')->isoFormat('dddd, D MMM Y') }}</p>
+        </div>
 
-<div class="grid grid-3">
-    <div class="card">
-        @if($buku->cover_image)
-            <img src="{{ asset('storage/' . $buku->cover_image) }}" alt="{{ $buku->title }}" 
-                 style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 15px;">
-        @else
-            <div style="width: 100%; height: 300px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 1px solid #ddd;">
-                <span style="color: #6c757d; font-size: 2rem;">📚</span>
+        <nav class="space-y-2">
+            {{-- Dashboard --}}
+            <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
+                <span class="text-xl">🏠</span><span>Dashboard</span>
+            </a>
+            
+            {{-- Jelajahi Buku --}}
+            <a href="{{ route('books.browse') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
+                <span class="text-xl">📚</span><span>Jelajahi Buku</span>
+            </a>
+            
+            {{-- Riwayat Pinjaman --}}
+            <a href="{{ route('borrowings.my') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
+                <span class="text-xl">📜</span><span>Riwayat Pinjaman</span>
+            </a>
+            
+            {{-- Keluar --}}
+            <a href="{{ route('logout') }}" 
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
+                class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-red-500/50 hover:opacity-100">
+                <span class="text-xl">🚪</span><span>Keluar</span>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+        </nav>
+    </aside>
+
+    {{-- MAIN CONTENT --}}
+    <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
+        <div class="max-w-7xl mx-auto">
+            {{-- Header --}}
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-900">Koleksi Buku Perpustakaan</h1>
             </div>
-        @endif
-        
-        @if(auth()->user()->isUser())
-            @if($buku->isAvailable())
-                <form method="POST" action="{{ route('books.borrow', $buku) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-success" style="width: 100%;">Pinjam Buku Ini</button>
+
+            {{-- Search and Filters --}}
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <form method="GET" action="{{ route('books.browse') }}" class="flex flex-col sm:flex-row gap-4 items-end">
+                    <div class="flex-1">
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Cari Buku</label>
+                        <input type="text" id="search" name="search" value="{{ request('search') }}" 
+                               placeholder="Cari berdasarkan judul, penulis, atau ISBN..." 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Jenis</label>
+                        <select id="type" name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Semua Jenis</option>
+                            <option value="light_novel" {{ request('type') == 'light_novel' ? 'selected' : '' }}>Light Novel</option>
+                            <option value="manga" {{ request('type') == 'manga' ? 'selected' : '' }}>Manga</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex-1">
+                        <label for="available" class="block text-sm font-medium text-gray-700 mb-2">Ketersediaan</label>
+                        <select id="available" name="available" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Semua</option>
+                            <option value="1" {{ request('available') == '1' ? 'selected' : '' }}>Hanya Tersedia</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">Cari</button>
+                        @if(request()->anyFilled(['search', 'type', 'available']))
+                            <a href="{{ route('books.browse') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold transition">Reset</a>
+                        @endif
+                    </div>
                 </form>
-            @else
-                <button class="btn" style="width: 100%; background: #ccc;" disabled>Tidak Tersedia</button>
-            @endif
-        @endif
-    </div>
-    
-    <div style="grid-column: span 2;">
-        <div class="card">
-            <h2>Detail Buku</h2>
-            
-            <div class="grid grid-2 mt-20">
-                <div>
-                    <p><strong>Penulis:</strong> {{ $buku->author }}</p>
-                    <p><strong>Jenis:</strong> {{ ucfirst(str_replace('_', ' ', $buku->type)) }}</p>
-                    <p><strong>Penerbit:</strong> {{ $buku->publisher ?? 'Tidak ditetapkan' }}</p>
-                    <p><strong>Tanggal Terbit:</strong> {{ $buku->publication_date ? $buku->publication_date->format('d M Y') : 'Tidak ditetapkan' }}</p>
-                </div>
-                
-                <div>
-                    <p><strong>ISBN:</strong> {{ $buku->isbn ?? 'Tidak ditetapkan' }}</p>
-                    <p><strong>Eksemplar Tersedia:</strong> {{ $buku->available_copies }}/{{ $buku->total_copies }}</p>
-                    <p><strong>Status:</strong> 
-                        <span class="btn btn-sm {{ $buku->is_active ? 'btn-success' : 'btn-danger' }}">
-                            {{ $buku->is_active ? 'Aktif' : 'Tidak Aktif' }}
-                        </span>
-                    </p>
-                    @if($buku->price)
-                        <p><strong>Harga:</strong> Rp {{ number_format($buku->price, 0, ',', '.') }}</p>
-                    @endif
-                </div>
             </div>
-            
-            @if($buku->description)
-                <div class="mt-20">
-                    <strong>Deskripsi:</strong>
-                    <p style="margin-top: 5px;">{{ $buku->description }}</p>
+
+            {{-- Books Grid --}}
+            @if($books->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+                    @foreach($books as $book)
+                        <div class="book-card">
+                            <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
+                                @if($book->cover_image)
+                                    <img src="{{ asset('storage/' . $book->cover_image) }}" 
+                                        alt="{{ $book->title }}" 
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
+                                @endif
+                            </div>
+                            
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>{{ $book->author }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-1"></i>{{ $book->publication_date ? $book->publication_date->format('Y') : 'N/A' }}
+                                </p>
+                                <p class="text-sm text-gray-500 mt-2">
+                                    <i class="fas fa-book mr-1"></i>{{ ucfirst(str_replace('_', ' ', $book->type)) }}
+                                </p>
+                                <p class="text-sm mt-2">
+                                    <span class="inline-block px-2 py-1 text-xs rounded-full {{ $book->available_copies > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $book->available_copies > 0 ? 'Tersedia (' . $book->available_copies . ')' : 'Tidak Tersedia' }}
+                                    </span>
+                                </p>
+                            </div>
+                            
+                            {{-- Tombol Pinjam untuk User --}}
+                            <div class="px-4 pb-4">
+                                @php
+                                    $userHasBorrowed = $book->peminjaman()
+                                        ->where('user_id', auth()->id())
+                                        ->where('status', 'dipinjam')
+                                        ->exists();
+                                @endphp
+                                
+                                @if($userHasBorrowed)
+                                    <button class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
+                                        <i class="fas fa-clock mr-2"></i>Sedang Dipinjam
+                                    </button>
+                                @elseif($book->isAvailable())
+                                    <form method="POST" action="{{ route('books.borrow', $book) }}" class="w-full">
+                                        @csrf
+                                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition duration-200">
+                                            <i class="fas fa-download mr-2"></i>Pinjam Buku
+                                        </button>
+                                    </form>
+                                @else
+                                    <button class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg font-semibold cursor-not-allowed" disabled>
+                                        <i class="fas fa-ban mr-2"></i>Tidak Tersedia
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-            @endif
-            
-            @if(auth()->user()->isAdmin())
-                <div class="mt-20" style="border-top: 1px solid #ddd; padding-top: 20px;">
-                    <a href="{{ route('books.edit', $buku) }}" class="btn btn-warning">Edit Buku</a>
-                    <form method="POST" action="{{ route('books.destroy', $buku) }}" style="display: inline; margin-left: 10px;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" 
-                                onclick="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">Hapus Buku</button>
-                    </form>
+
+                {{-- Pagination --}}
+                @if($books->hasPages())
+                    <div class="flex justify-center items-center gap-4 mt-8">
+                        @if(!$books->onFirstPage())
+                            <a href="{{ $books->previousPageUrl() }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                                <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
+                            </a>
+                        @endif
+                        
+                        <span class="text-gray-700 font-semibold">Halaman {{ $books->currentPage() }} dari {{ $books->lastPage() }}</span>
+                        
+                        @if($books->hasMorePages())
+                            <a href="{{ $books->nextPageUrl() }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                                Selanjutnya <i class="fas fa-chevron-right mr-2"></i>
+                            </a>
+                        @endif
+                    </div>
+                @endif
+            @else
+                {{-- Empty State --}}
+                <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                    <i class="fas fa-books text-6xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ada Buku Ditemukan</h3>
+                    @if(request()->anyFilled(['search', 'type', 'available']))
+                        <p class="text-gray-600 mb-4">Tidak ada buku yang sesuai dengan kriteria pencarian Anda.</p>
+                        <a href="{{ route('books.browse') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                            <i class="fas fa-list mr-2"></i> Lihat Semua Buku
+                        </a>
+                    @else
+                        <p class="text-gray-600 mb-4">Belum ada buku dalam koleksi perpustakaan.</p>
+                    @endif
                 </div>
             @endif
         </div>
-    </div>
-</div>
-
-@if(auth()->user()->isAdmin() && $buku->peminjaman->count() > 0)
-<div class="card">
-    <h3>Riwayat Peminjaman</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Pengguna</th>
-                <th>Tanggal Pinjam</th>
-                <th>Tanggal Jatuh Tempo</th>
-                <th>Tanggal Kembali</th>
-                <th>Status</th>
-                <th>Denda</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($buku->peminjaman as $borrowing)
-            <tr>
-                <td>{{ $borrowing->user->name }}</td>
-                <td>{{ $borrowing->tanggal_pinjam->format('d M Y') }}</td>
-                <td>{{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}</td>
-                <td>{{ $borrowing->tanggal_kembali_aktual ? $borrowing->tanggal_kembali_aktual->format('d M Y') : '-' }}</td>
-                <td>
-                    <span class="btn btn-sm 
-                        @if($borrowing->status == 'dipinjam') btn-warning
-                        @elseif($borrowing->status == 'dikembalikan') btn-success
-                        @else btn-danger @endif">
-                        {{ $borrowing->status == 'dipinjam' ? 'Dipinjam' : ($borrowing->status == 'dikembalikan' ? 'Dikembalikan' : ucfirst($borrowing->status)) }}
-                    </span>
-                </td>
-                <td>
-                    @if($borrowing->denda > 0)
-                        Rp {{ number_format($borrowing->denda, 0, ',', '.') }}
-                    @else
-                        -
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-@endif
-@endsection
+    </main>
+</body>
+</html>

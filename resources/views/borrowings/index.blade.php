@@ -181,11 +181,11 @@
     <aside class="hidden lg:block sidebar w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
             <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
-            <p class="text-xs opacity-80 mt-1">Dashboard Pengguna</p>
+            <p class="text-xs opacity-80 mt-1">Dashboard Admin</p>
         </div>
 
         <div class="flex flex-col items-center mb-6 border-b border-white/20 pb-4">
-            <img src="https://placehold.co/80x80/FFFFFF/000?text=USER" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+            <img src="https://placehold.co/80x80/FFFFFF/000?text=ADMIN" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
             <p class="mt-3 font-semibold text-lg">{{ auth()->user()->name }}</p>
             <p class="text-xs opacity-75">{{ now()->locale('id')->isoFormat('dddd, D MMM Y') }}</p>
         </div>
@@ -195,10 +195,13 @@
                 <span class="text-xl">🏠</span><span>Dashboard</span>
             </a>
             <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
-                <span class="text-xl">📚</span><span>Jelajahi Buku</span>
+                <span class="text-xl">📚</span><span>Kelola Buku</span>
             </a>
-            <a href="{{ route('borrowings.my') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
-                <span class="text-xl">📜</span><span>Riwayat Pinjaman</span>
+            <a href="{{ route('borrowings.index') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
+                <span class="text-xl">📋</span><span>Kelola Peminjaman</span>
+            </a>
+            <a href="{{ route('borrowings.overdue') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
+                <span class="text-xl">⚠️</span><span>Buku Terlambat</span>
             </a>
             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-red-500/50 hover:opacity-100">
                 <span class="text-xl">🚪</span><span>Keluar</span>
@@ -218,7 +221,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Semua Peminjaman</h1>
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->isAdmin())
                     <a href="{{ route('borrowings.create') }}" class="btn btn-success text-sm md:text-base">
                         <i class="fas fa-plus"></i> Buat Peminjaman Baru
                     </a>
@@ -239,7 +242,7 @@
                         </select>
                     </div>
                     
-                    @if(auth()->user()->role === 'admin')
+                    @if(auth()->user()->isAdmin())
                     <div class="form-group">
                         <label for="overdue">Hanya Terlambat</label>
                         <select id="overdue" name="overdue">
@@ -283,31 +286,31 @@
                                 <tr>
                                     <td>{{ $borrowing->user->name }}</td>
                                     <td>
-                                        <strong class="text-gray-900">{{ $borrowing->book->title }}</strong><br>
-                                        <small class="text-gray-500">by {{ $borrowing->book->author }}</small>
+                                        <strong class="text-gray-900">{{ $borrowing->buku->title }}</strong><br>
+                                        <small class="text-gray-500">by {{ $borrowing->buku->author }}</small>
                                     </td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $borrowing->book->type)) }}</td>
-                                    <td>{{ $borrowing->borrowed_at->format('d M Y') }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $borrowing->buku->type)) }}</td>
+                                    <td>{{ $borrowing->tanggal_pinjam->format('d M Y') }}</td>
                                     <td>
-                                        {{ $borrowing->due_date->format('d M Y') }}
+                                        {{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}
                                         @if($borrowing->isOverdue())
-                                            <br><small style="color: #ef4444;" class="font-semibold">{{ $borrowing->overdueDays() }} days overdue</small>
+                                            <br><small style="color: #ef4444;" class="font-semibold">{{ $borrowing->getDaysOverdue() }} days overdue</small>
                                         @endif
                                     </td>
-                                    <td>{{ $borrowing->returned_at ? $borrowing->returned_at->format('d M Y') : '-' }}</td>
+                                    <td>{{ $borrowing->tanggal_kembali_aktual ? $borrowing->tanggal_kembali_aktual->format('d M Y') : '-' }}</td>
                                     <td>
                                         @if($borrowing->isOverdue())
                                             <span class="btn btn-sm btn-danger">Overdue</span>
-                                        @elseif($borrowing->returned_at)
+                                        @elseif($borrowing->tanggal_kembali_aktual)
                                             <span class="btn btn-sm btn-info">Dikembalikan</span>
                                         @else
                                             <span class="btn btn-sm btn-warning">Dipinjam</span>
                                         @endif
                                     </td>
-                                    <td>{{ $borrowing->fine ? 'Rp ' . number_format($borrowing->fine, 0, ',', '.') : '-' }}</td>
+                                    <td>{{ $borrowing->denda ? 'Rp ' . number_format($borrowing->denda, 0, ',', '.') : '-' }}</td>
                                     <td class="whitespace-nowrap">
                                         <a href="{{ route('borrowings.show', $borrowing) }}" class="btn btn-sm bg-gray-300 text-gray-800 hover:bg-gray-400">View</a>
-                                        @if(!$borrowing->returned_at && auth()->user()->role === 'admin')
+                                        @if(!$borrowing->tanggal_kembali_aktual && auth()->user()->isAdmin())
                                             <form method="POST" action="{{ route('borrowings.return', $borrowing) }}" style="display: inline;" class="ml-1">
                                                 @csrf
                                                 <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Kembalikan buku ini?')">Return</button>
@@ -346,7 +349,7 @@
                     <i class="fas fa-file-alt text-5xl text-gray-400 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Tidak ada peminjaman ditemukan</h3>
                     <p class="text-gray-500 mb-4">Coba sesuaikan filter Anda atau buat peminjaman baru.</p>
-                    @if(auth()->user()->role === 'admin')
+                    @if(auth()->user()->isAdmin())
                         <a href="{{ route('borrowings.create') }}" class="btn btn-success">Buat Peminjaman Baru</a>
                     @endif
                 </div>
