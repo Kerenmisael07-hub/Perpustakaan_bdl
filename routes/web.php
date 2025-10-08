@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/books', [BukuController::class, 'index'])->name('books.index');
         Route::get('/books/create', [BukuController::class, 'create'])->name('books.create');
         Route::post('/books', [BukuController::class, 'store'])->name('books.store');
+        Route::get('/books/{buku}', [BukuController::class, 'show'])->name('books.show');
         Route::get('/books/{buku}/edit', [BukuController::class, 'edit'])->name('books.edit');
         Route::put('/books/{buku}', [BukuController::class, 'update'])->name('books.update');
         Route::delete('/books/{buku}', [BukuController::class, 'destroy'])->name('books.destroy');
@@ -45,7 +46,7 @@ Route::middleware('auth')->group(function () {
     // User only routes for browsing books
     Route::middleware('user')->group(function () {
         Route::get('/browse-books', [BukuController::class, 'browse'])->name('books.browse');
-        Route::get('/browse-books/{buku}', [BukuController::class, 'show'])->name('books.show');
+        Route::get('/browse-books/{buku}', [BukuController::class, 'showForUser'])->name('books.show.user');
         Route::post('/books/{buku}/borrow', [BukuController::class, 'borrow'])->name('books.borrow');
     });
     

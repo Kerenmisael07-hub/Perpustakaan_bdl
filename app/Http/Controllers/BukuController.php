@@ -159,7 +159,18 @@ class BukuController extends Controller
         // Load relasi yang diperlukan untuk tampilan detail
         $buku->load(['peminjaman.user']);
         
-        return view('books.show', compact('buku'));
+        return view('books.detail', compact('buku'));
+    }
+
+    /**
+     * Show book detail for user (from browse page)
+     */
+    public function showForUser(Buku $buku)
+    {
+        // Load relasi yang diperlukan untuk tampilan detail
+        $buku->load(['peminjaman.user']);
+        
+        return view('books.detail', compact('buku'));
     }
 
     public function edit(Buku $buku)

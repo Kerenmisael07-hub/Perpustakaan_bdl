@@ -30,12 +30,20 @@
             border-radius: 12px; /* Lebih rounded */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Bayangan lebih halus */
             overflow: hidden;
-            transition: transform 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
             cursor: pointer;
+            border: 2px solid transparent;
         }
         .book-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -155,19 +163,22 @@
             @if($books->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
                     @foreach($books as $book)
-                        <div class="book-card">
+                        <div class="book-card relative group">
+                            {{-- Clickable overlay for detail --}}
+                            <a href="{{ route('books.show', $book) }}" class="absolute inset-0 z-10 rounded-xl" aria-label="Lihat detail {{ $book->title }}"></a>
+                            
                             <div class="h-64 flex items-center justify-center overflow-hidden bg-gray-100 rounded-t-xl">
                                 @if($book->cover_image)
                                     <img src="{{ asset('storage/' . $book->cover_image) }}" 
                                         alt="{{ $book->title }}" 
-                                        class="w-full h-full object-cover">
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
                                 @else
                                     <span class="text-gray-400 text-center px-4">Tidak Ada Gambar</span>
                                 @endif
                             </div>
                             
                             <div class="p-4">
-                                <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{{ $book->title }}</h3>
+                                <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">{{ $book->title }}</h3>
                                 <p class="text-sm text-gray-500">
                                     <i class="fas fa-user mr-1"></i>{{ $book->author }}
                                 </p>
@@ -183,8 +194,11 @@
                                     </span>
                                 </p>
                                 
-                                {{-- Admin Actions --}}
-                                <div class="mt-3 flex gap-2">
+                                {{-- Admin Actions - positioned above overlay --}}
+                                <div class="mt-3 flex gap-2 relative z-20">
+                                    <a href="{{ route('books.show', $book) }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded text-center text-sm font-semibold transition">
+                                        <i class="fas fa-eye mr-1"></i>Detail
+                                    </a>
                                     <a href="{{ route('books.edit', $book) }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded text-center text-sm font-semibold transition">
                                         <i class="fas fa-edit mr-1"></i>Edit
                                     </a>

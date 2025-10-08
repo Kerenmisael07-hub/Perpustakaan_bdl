@@ -68,13 +68,12 @@
                 <h2 class="text-xl font-bold text-gray-700">Statistik Utama</h2>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-8 pt-0 pb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-8 pt-0 pb-6">
                 @php
                     $stats = [
                         ['label' => 'Sedang Dipinjam', 'value' => $activeBorrowings->count(), 'icon' => '📚', 'color' => 'bg-green-500'],
                         ['label' => 'Total Dipinjam', 'value' => $borrowingHistory->count(), 'icon' => '📑', 'color' => 'bg-yellow-500'],
                         ['label' => 'Denda Total', 'value' => 'Rp '.number_format($totalFines, 0, ',', '.'), 'icon' => '💰', 'color' => 'bg-red-500'],
-                        ['label' => 'Buku Tersedia', 'value' => $availableBooks->count(), 'icon' => '📖', 'color' => 'bg-indigo-500'],
                     ];
                 @endphp
 
@@ -190,7 +189,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             {{-- Aktivitas Terbaru --}}
             <div class="md:col-span-2 bg-white p-5 rounded-lg shadow">
                 <h2 class="font-semibold text-lg mb-3">Aktivitas Terbaru</h2>
@@ -246,17 +245,6 @@
                         @endif
                     </div>
                 @endif
-            </div>
-
-            {{-- Buku Tersedia (Favorit Anda) --}}
-            <div class="bg-white p-5 rounded-lg shadow">
-                <h2 class="font-semibold text-lg mb-3">Buku Tersedia (Favorit Anda)</h2>
-                <div class="bg-gray-50 p-4 rounded-lg text-center">
-                    <p class="text-gray-500 mb-3">Tidak ada buku tersedia saat ini.</p>
-                    <a href="{{ route('books.index') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                        Jelajahi Semua Buku
-                    </a>
-                </div>
             </div>
         </div>
 

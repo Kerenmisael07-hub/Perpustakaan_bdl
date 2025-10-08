@@ -142,6 +142,9 @@ class Peminjaman extends Model
             return null;
         }
 
+        // Ensure borrowDays is integer
+        $borrowDays = (int) $borrowDays;
+
         $borrowing = self::create([
             'user_id' => $userId,
             'buku_id' => $bukuId,

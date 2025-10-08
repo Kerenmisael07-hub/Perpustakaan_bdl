@@ -3,143 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toshokan - Perpustakaan Buku Jepang</title>
+    <title>Kelola Peminjaman - Toshokan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'primary': '#10b981', // green-500
-                        'warning': '#f59e0b', // amber-500
-                        'danger': '#ef4444', // red-500
-                        'info': '#3b82f6', // blue-500
-                        'secondary': '#6b7280', // gray-500
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-z1w1d/r6Q6a1g+D99+X3P8sA8+f0I/N3n7+T3w9a/kE5e4rFvG2rV1V1aB1e5+fN7k2i8W6/5+a7H7/x+cQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* Custom styles to match the structure from the Blade file */
-        body {
-            background-color: #f3f4f6; /* bg-gray-100 */
-            font-family: 'Inter', sans-serif;
-            padding: 2rem;
-        }
-
-        .card {
-            background-color: #ffffff;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem; /* rounded-md */
-            font-weight: 500;
-            transition: background-color 0.15s ease-in-out;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.25rem;
-            gap: 0.5rem;
-        }
-
-        .btn-success { background-color: #10b981; color: white; }
-        .btn-success:hover { background-color: #059669; }
-
-        .btn-warning { background-color: #f59e0b; color: white; }
-        .btn-danger { background-color: #ef4444; color: white; }
-        .btn-info { background-color: #3b82f6; color: white; }
-
-        .btn:not(.btn-success, .btn-warning, .btn-danger, .btn-info) {
-            background-color: #4b5563; /* gray-600 */
-            color: white;
-        }
-        .btn:not(.btn-success, .btn-warning, .btn-danger, .btn-info):hover { background-color: #374151; }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            line-height: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.25rem;
-            font-weight: 500;
-            color: #4b5563; /* text-gray-600 */
-            font-size: 0.875rem;
-        }
-
-        .form-group select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db; /* border-gray-300 */
-            border-radius: 0.375rem;
-            background-color: #ffffff;
-            appearance: none;
-        }
-        
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        thead {
-            background-color: #f9fafb; /* bg-gray-50 */
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        th {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #4b5563; /* text-gray-600 */
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #f3f4f6; /* border-gray-100 */
-            font-size: 0.875rem;
-            color: #374151; /* text-gray-700 */
-            vertical-align: middle;
-        }
-        
-        tbody tr:hover {
-            background-color: #f9fafb;
-        }
-
-        /* Responsive Grid for Filters */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-            gap: 1.5rem;
-        }
-
-        @media (min-width: 640px) { /* sm */
-            .grid-3 {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-
-        /* Sidebar Styles (dari dashboard) */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         .font-sans { font-family: 'Inter', sans-serif; }
         .gradient-sidebar {
             background: linear-gradient(180deg, #0093E9 0%, #37a0ff 100%);
@@ -147,38 +15,11 @@
         .text-shadow-light {
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow-x: hidden;
-        }
-        .layout-container {
-            min-height: 100vh;
-            display: flex;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        .main-content {
-            flex: 1;
-            min-height: 100vh;
-            overflow-y: auto;
-            padding: 1rem; /* Sesuaikan padding body asli */
-        }
-        .sidebar {
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            overflow-y: auto;
-        }
     </style>
 </head>
-<body class="font-sans layout-container bg-gray-100">
-
-    {{-- SIDEBAR KIRI (dari dashboard.blade.php - iLibrary, dengan emoji icons) --}}
-    <aside class="hidden lg:block sidebar w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
+<body class="font-sans min-h-screen bg-gray-50 flex h-screen overflow-hidden">
+    {{-- SIDEBAR --}}
+    <aside class="hidden lg:block w-64 gradient-sidebar text-white p-6 shadow-2xl flex-shrink-0 overflow-y-auto">
         <div class="mb-8">
             <h1 class="text-2xl font-black text-shadow-light">Toshokan</h1>
             <p class="text-xs opacity-80 mt-1">Dashboard Admin</p>
@@ -191,50 +32,82 @@
         </div>
 
         <nav class="space-y-2">
+            {{-- Dashboard --}}
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
                 <span class="text-xl">🏠</span><span>Dashboard</span>
             </a>
+            
+            {{-- Kelola Buku --}}
             <a href="{{ route('books.index') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
                 <span class="text-xl">📚</span><span>Kelola Buku</span>
             </a>
+            
+            {{-- Kelola Peminjaman --}}
             <a href="{{ route('borrowings.index') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-white/20 font-semibold transition hover:bg-white/30">
                 <span class="text-xl">📋</span><span>Kelola Peminjaman</span>
             </a>
+            
+            {{-- Buku Terlambat --}}
             <a href="{{ route('borrowings.overdue') }}" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-white/10 hover:opacity-100">
                 <span class="text-xl">⚠️</span><span>Buku Terlambat</span>
             </a>
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-red-500/50 hover:opacity-100">
+            
+            {{-- Keluar --}}
+            <a href="{{ route('logout') }}" 
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
+                class="flex items-center space-x-3 p-3 rounded-lg opacity-80 transition hover:bg-red-500/50 hover:opacity-100">
                 <span class="text-xl">🚪</span><span>Keluar</span>
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
         </nav>
     </aside>
 
-    {{-- MAIN CONTENT AREA --}}
-    <main class="main-content">
-        {{-- MOBILE HEADER (tanpa navbar) --}}
-        <div class="lg:hidden gradient-sidebar p-4 flex justify-between items-center shadow-lg text-white mb-6">
-            <h2 class="text-xl font-bold">Toshokan</h2>
-            <p class="text-sm">{{ now()->locale('id')->isoFormat('D MMM Y') }}</p>
-        </div>
+    {{-- MAIN CONTENT --}}
+    <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
+        <div class="max-w-6xl mx-auto">
+            {{-- Flash Messages --}}
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
 
-        <div class="max-w-7xl mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Semua Peminjaman</h1>
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Header --}}
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-black text-gray-800 mb-2">📋 Kelola Peminjaman</h1>
+                    <p class="text-gray-600">Kelola semua peminjaman buku di perpustakaan</p>
+                </div>
                 @if(auth()->user()->isAdmin())
-                    <a href="{{ route('borrowings.create') }}" class="btn btn-success text-sm md:text-base">
-                        <i class="fas fa-plus"></i> Buat Peminjaman Baru
+                    <a href="{{ route('borrowings.create') }}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
+                        <i class="fas fa-plus mr-2"></i>
+                        Buat Peminjaman Baru
                     </a>
                 @endif
             </div>
-
-            <div class="card">
-                <h2 class="text-lg font-semibold mb-4 text-gray-700">Filter Peminjaman</h2>
-                <form method="GET" action="{{ route('borrowings.index') }}" class="grid-3">
+            {{-- Filter Card --}}
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-filter text-blue-500 mr-2"></i>
+                    Filter Peminjaman
+                </h2>
+                <form method="GET" action="{{ route('borrowings.index') }}" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status" name="status">
+                    <div>
+                        <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                        <select id="status" name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Semua Status</option>
                             <option value="dipinjam" {{ request('status') == 'dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
                             <option value="dikembalikan" {{ request('status') == 'dikembalikan' ? 'selected' : '' }}>Sudah Dikembalikan</option>
@@ -243,117 +116,185 @@
                     </div>
                     
                     @if(auth()->user()->isAdmin())
-                    <div class="form-group">
-                        <label for="overdue">Hanya Terlambat</label>
-                        <select id="overdue" name="overdue">
+                    <div>
+                        <label for="overdue" class="block text-sm font-semibold text-gray-700 mb-2">Hanya Terlambat</label>
+                        <select id="overdue" name="overdue" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Semua Peminjaman</option>
                             <option value="1" {{ request('overdue') == '1' ? 'selected' : '' }}>Hanya Terlambat</option>
                         </select>
                     </div>
                     @endif
                     
-                    <div class="form-group flex flex-col justify-end">
-                        <label class="hidden sm:block opacity-0">&nbsp;</label>
+                    <div class="flex flex-col justify-end">
                         <div class="flex space-x-3">
-                            <button type="submit" class="btn bg-blue-500 hover:bg-blue-600 text-white flex-grow">Filter</button>
+                            <button type="submit" class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">
+                                <i class="fas fa-search mr-2"></i>
+                                Filter
+                            </button>
                             @if(request()->anyFilled(['status', 'overdue']))
-                                <a href="{{ route('borrowings.index') }}" class="btn bg-secondary hover:bg-gray-700 text-white flex-grow">Reset</a>
+                                <a href="{{ route('borrowings.index') }}" class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow hover:bg-gray-700 transition">
+                                    <i class="fas fa-undo mr-2"></i>
+                                    Reset
+                                </a>
                             @endif
                         </div>
                     </div>
                 </form>
             </div>
-
             {{-- Borrowings Table --}}
             @if($borrowings->count() > 0)
-                <div class="card overflow-x-auto">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Book</th>
-                                <th>Type</th>
-                                <th>Borrowed</th>
-                                <th>Due Date</th>
-                                <th>Return Date</th>
-                                <th>Status</th>
-                                <th>Fine</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($borrowings as $borrowing)
-                                <tr>
-                                    <td>{{ $borrowing->user->name }}</td>
-                                    <td>
-                                        <strong class="text-gray-900">{{ $borrowing->buku->title }}</strong><br>
-                                        <small class="text-gray-500">by {{ $borrowing->buku->author }}</small>
-                                    </td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $borrowing->buku->type)) }}</td>
-                                    <td>{{ $borrowing->tanggal_pinjam->format('d M Y') }}</td>
-                                    <td>
-                                        {{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}
-                                        @if($borrowing->isOverdue())
-                                            <br><small style="color: #ef4444;" class="font-semibold">{{ $borrowing->getDaysOverdue() }} days overdue</small>
-                                        @endif
-                                    </td>
-                                    <td>{{ $borrowing->tanggal_kembali_aktual ? $borrowing->tanggal_kembali_aktual->format('d M Y') : '-' }}</td>
-                                    <td>
-                                        @if($borrowing->isOverdue())
-                                            <span class="btn btn-sm btn-danger">Overdue</span>
-                                        @elseif($borrowing->tanggal_kembali_aktual)
-                                            <span class="btn btn-sm btn-info">Dikembalikan</span>
-                                        @else
-                                            <span class="btn btn-sm btn-warning">Dipinjam</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $borrowing->denda ? 'Rp ' . number_format($borrowing->denda, 0, ',', '.') : '-' }}</td>
-                                    <td class="whitespace-nowrap">
-                                        <a href="{{ route('borrowings.show', $borrowing) }}" class="btn btn-sm bg-gray-300 text-gray-800 hover:bg-gray-400">View</a>
-                                        @if(!$borrowing->tanggal_kembali_aktual && auth()->user()->isAdmin())
-                                            <form method="POST" action="{{ route('borrowings.return', $borrowing) }}" style="display: inline;" class="ml-1">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Kembalikan buku ini?')">Return</button>
-                                            </form>
-                                        @endif
-                                    </td>
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-max">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[150px]">User</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[200px]">Buku</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[100px]">Tipe</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[120px]">Tanggal Pinjam</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[140px]">Tanggal Jatuh Tempo</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[120px]">Tanggal Kembali</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[120px]">Status</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[150px]">Denda</th>
+                                    <th class="px-4 py-4 text-left font-semibold min-w-[180px]">Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    
-                    {{-- Pagination --}}
-                    @if($borrowings->hasPages())
-                        <div class="text-center mt-6">
-                            <div class="flex justify-center items-center gap-2">
-                                @if(!$borrowings->onFirstPage())
-                                    <a href="{{ $borrowings->previousPageUrl() }}" class="btn bg-blue-500 hover:bg-blue-600 text-white">Previous</a>
-                                @else
-                                    <span class="btn bg-gray-300 text-gray-600 cursor-not-allowed">Previous</span>
-                                @endif
-                                
-                                <span class="text-sm text-gray-600">Page {{ $borrowings->currentPage() }} of {{ $borrowings->lastPage() }}</span>
-                                
-                                @if($borrowings->hasMorePages())
-                                    <a href="{{ $borrowings->nextPageUrl() }}" class="btn bg-blue-500 hover:bg-blue-600 text-white">Next</a>
-                                @else
-                                    <span class="btn bg-gray-300 text-gray-600 cursor-not-allowed">Next</span>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach($borrowings as $borrowing)
+                                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                        <td class="px-4 py-4">
+                                            <div class="font-semibold text-gray-800">{{ $borrowing->user->name }}</div>
+                                            <div class="text-sm text-gray-600">{{ $borrowing->user->username }}</div>
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <div class="font-semibold text-gray-800">{{ $borrowing->buku->title }}</div>
+                                            <div class="text-sm text-gray-600">by {{ $borrowing->buku->author }}</div>
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap">
+                                                {{ ucfirst(str_replace('_', ' ', $borrowing->buku->type)) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 text-gray-600 whitespace-nowrap">
+                                            {{ $borrowing->tanggal_pinjam->format('d M Y') }}
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <div class="text-gray-600 whitespace-nowrap">{{ $borrowing->tanggal_kembali_rencana->format('d M Y') }}</div>
+                                            @if($borrowing->isOverdue())
+                                                <div class="text-red-600 font-semibold text-sm mt-1 whitespace-nowrap">
+                                                    {{ $borrowing->getDaysOverdue() }} hari terlambat
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-4 text-gray-600 whitespace-nowrap">
+                                            {{ $borrowing->tanggal_kembali_aktual ? $borrowing->tanggal_kembali_aktual->format('d M Y') : '-' }}
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            @if($borrowing->isOverdue())
+                                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap">
+                                                    Terlambat
+                                                </span>
+                                            @elseif($borrowing->tanggal_kembali_aktual)
+                                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap">
+                                                    Dikembalikan
+                                                </span>
+                                            @else
+                                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap">
+                                                    Dipinjam
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            @if($borrowing->denda)
+                                                <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap inline-block">
+                                                    Rp {{ number_format($borrowing->denda, 0, ',', '.') }}
+                                                </span>
+                                            @elseif($borrowing->isOverdue())
+                                                <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap inline-block">
+                                                    Rp {{ number_format($borrowing->calculateFine(), 0, ',', '.') }}
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400 whitespace-nowrap">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <div class="flex flex-col sm:flex-row gap-2">
+                                                <a href="{{ route('borrowings.show', $borrowing->id) }}" class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors inline-flex items-center justify-center whitespace-nowrap">
+                                                    <i class="fas fa-eye mr-1"></i>
+                                                    Lihat
+                                                </a>
+                                                @if(!$borrowing->tanggal_kembali_aktual && auth()->user()->isAdmin())
+                                                    <form method="POST" action="{{ route('borrowings.return', $borrowing->id) }}" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors inline-flex items-center justify-center whitespace-nowrap w-full" onclick="return confirm('Tandai sebagai dikembalikan?')">
+                                                            <i class="fas fa-undo mr-1"></i>
+                                                            Kembalikan
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                
+                {{-- Pagination --}}
+                @if($borrowings->hasPages())
+                    <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+                        <div class="flex justify-center items-center gap-4">
+                            @if(!$borrowings->onFirstPage())
+                                <a href="{{ $borrowings->previousPageUrl() }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">
+                                    <i class="fas fa-chevron-left mr-2"></i>
+                                    Previous
+                                </a>
+                            @else
+                                <span class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-600 font-semibold rounded-lg cursor-not-allowed">
+                                    <i class="fas fa-chevron-left mr-2"></i>
+                                    Previous
+                                </span>
+                            @endif
+                            
+                            <span class="text-gray-600 font-medium">
+                                Page {{ $borrowings->currentPage() }} of {{ $borrowings->lastPage() }}
+                            </span>
+                            
+                            @if($borrowings->hasMorePages())
+                                <a href="{{ $borrowings->nextPageUrl() }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">
+                                    Next
+                                    <i class="fas fa-chevron-right ml-2"></i>
+                                </a>
+                            @else
+                                <span class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-600 font-semibold rounded-lg cursor-not-allowed">
+                                    Next
+                                    <i class="fas fa-chevron-right ml-2"></i>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             @else
                 {{-- Empty State --}}
-                <div class="card text-center py-10">
-                    <i class="fas fa-file-alt text-5xl text-gray-400 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Tidak ada peminjaman ditemukan</h3>
-                    <p class="text-gray-500 mb-4">Coba sesuaikan filter Anda atau buat peminjaman baru.</p>
+                <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+                    <div class="text-6xl text-gray-400 mb-6">
+                        📋
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Tidak ada peminjaman ditemukan</h3>
+                    <p class="text-gray-600 mb-8 text-lg">Coba sesuaikan filter Anda atau buat peminjaman baru.</p>
                     @if(auth()->user()->isAdmin())
-                        <a href="{{ route('borrowings.create') }}" class="btn btn-success">Buat Peminjaman Baru</a>
+                        <a href="{{ route('borrowings.create') }}" class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition text-lg">
+                            <i class="fas fa-plus mr-2"></i>
+                            Buat Peminjaman Baru
+                        </a>
                     @endif
                 </div>
             @endif
+        </div>
+    </main>
+</body>
+</html>
         </div>
     </main>
 </body>
