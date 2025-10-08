@@ -8,14 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
-    /**
-     * Display a listing of the resource for admin.
-     */
+
     public function index(Request $request)
     {
         $query = Buku::query();
 
-        // Logika untuk filter 'search'
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -98,9 +95,7 @@ class BukuController extends Controller
         return view('books.show', compact('books'));
     }
 
-    // ... method lainnya (show, create, store, edit, update, destroy, borrow)
-    // Sisa kode di bawah ini tidak perlu diubah karena sudah benar.
-    
+
     public function create()
     {
         return view('books.create');

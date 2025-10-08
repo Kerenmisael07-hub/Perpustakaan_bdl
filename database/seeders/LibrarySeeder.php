@@ -7,12 +7,9 @@ use Illuminate\Database\Seeder;
 
 class LibrarySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // Create admin user
         \App\Models\User::create([
             'name' => 'Library Admin',
             'username' => 'admin',
@@ -23,7 +20,6 @@ class LibrarySeeder extends Seeder
             'address' => 'Library Office, Main Building',
         ]);
 
-        // Create sample regular users
         \App\Models\User::create([
             'name' => 'Takeshi Yamamoto',
             'username' => 'takeshi',
@@ -44,7 +40,6 @@ class LibrarySeeder extends Seeder
             'address' => 'Osaka, Japan',
         ]);
 
-        // Create sample light novels
         \App\Models\Buku::create([
             'title' => 'Sword Art Online: Aincrad',
             'author' => 'Reki Kawahara',

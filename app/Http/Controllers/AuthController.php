@@ -11,17 +11,13 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Show login form
-     */
+ 
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle login attempt with username or email
-     */
+ 
     public function login(Request $request)
     {
         $this->checkTooManyFailedAttempts($request);
@@ -50,17 +46,13 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Show registration form
-     */
+ 
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle user registration
-     */
+
     public function register(Request $request)
     {
         $request->validate([
@@ -100,9 +92,7 @@ class AuthController extends Controller
             ->with('success', 'Registrasi berhasil! Selamat datang di sistem perpustakaan.');
     }
 
-    /**
-     * Handle logout
-     */
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -113,17 +103,13 @@ class AuthController extends Controller
             ->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
+
     private function throttleKey(Request $request): string
     {
         return mb_strtolower($request->input('email')) . '|' . $request->ip();
     }
 
-    /**
-     * Check if there were too many failed login attempts.
-     */
+ 
     private function checkTooManyFailedAttempts(Request $request): void
     {
         if (RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
