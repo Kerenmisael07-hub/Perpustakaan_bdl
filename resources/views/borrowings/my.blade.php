@@ -79,7 +79,7 @@
                         <a href="{{ route('borrowings.show', $borrowing) }}" class="px-3 py-1 text-sm bg-blue-500 text-white rounded">Lihat Detail</a>
                         <form method="POST" action="{{ route('borrowings.return', $borrowing) }}">
                             @csrf
-                            <button type="submit" class="px-3 py-1 text-sm bg-green-500 text-white rounded">Return Book</button>
+                            <button type="submit" class="px-3 py-1 text-sm bg-green-500 text-white rounded">Kembalikan Buku</button>
                         </form>
                     </div>
                 </div>

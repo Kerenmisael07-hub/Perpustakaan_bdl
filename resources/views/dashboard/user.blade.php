@@ -154,7 +154,7 @@
                         
                         @foreach($upcomingReturns as $borrowing)
                             @php
-                                $daysLeft = now()->diffInDays($borrowing->tanggal_kembali_rencana, false);
+                                $daysLeft = (int) round(now()->diffInDays($borrowing->tanggal_kembali_rencana, false));
                                 $isOverdue = $borrowing->isOverdue();
                             @endphp
                             
